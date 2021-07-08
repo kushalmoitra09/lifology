@@ -1,0 +1,80 @@
+.formSteps {
+    display: block;
+    width: 100%;
+    position: relative;
+    margin: 40px 0;
+}
+.formSteps:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.stepItem {
+    padding: 0;
+    position: relative;
+    display: block;
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+
+.stepContent {
+    display: inline-block;
+}
+.stepNumber {
+    background: #F8F8F8;
+    color:black;
+    display: block;
+    border-radius: 100%;
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    margin: 0 auto 10px auto;
+    position: relative;
+    font-size: 10px;
+    /* font-weight: 700; */
+    z-index: 2;
+}
+.stepTitle {
+    font-size: 13px;
+    color: black;
+    font-weight: 500;
+}
+.stepLine {
+    display: inline-block;
+    height: 3px;
+    width: 100%;
+    background: #F8F8F8;
+    /* float: left; */
+    position: absolute;
+    left: -50%;
+    top: 12px;
+    z-index: 1;
+}
+.stepItemActive .stepNumber {
+    background: #02C77D;
+    color: #ffffff;
+}
+.stepItemActive .stepTitle {
+    color: black;
+}
+.stepItemActive .stepLine {
+    background: #02C77D;
+}
+.stepItemCompleted .stepTitle {
+    color: black;
+}
+.stepItemCompleted .stepNumber {
+    background: #02C77D;
+    color: white;
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+}
+.stepItemCompleted .stepLine {
+    background: #02C77D;
+}

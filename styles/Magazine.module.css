@@ -1,0 +1,114 @@
+ul.topicGroup:after {
+    clear: both;
+    display: block;
+    content: "";
+}
+.topicItem {
+    float: left;
+    background: #F3F3F3;
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 30px;
+    margin:4px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.topicItem:hover {
+    background: #eff6fc;
+    color: white;
+}
+
+@keyframes carousel {
+    0% {
+      left: 0;
+    }
+    11% {
+      left: 0;
+    }
+    12.5% {
+      left: -100%;
+    }
+    23.5% {
+      left: -100%;
+    }
+    25% {
+      left: -200%;
+    }
+    36% {
+      left: -200%;
+    }
+    37.5% {
+      left: -300%;
+    }
+    48.5% {
+      left: -300%;
+    }
+    50% {
+      left: -400%;
+    }
+    61% {
+      left: -400%;
+    }
+    62.5% {
+      left: -300%;
+    }
+    73.5% {
+      left: -300%;
+    }
+    75% {
+      left: -200%;
+    }
+    86% {
+      left: -200%;
+    }
+    87.5% {
+      left: -100%;
+    }
+    98.5% {
+      left: -100%;
+    }
+    100% {
+      left: 0;
+    }
+    /* daqui: https://csswizardry.com/2011/10/fully-fluid-responsive-css-carousel/ */
+  }
+  @keyframes go {
+    100% {
+      left: -300%;
+    }
+  }
+  @keyframes back {
+    0% {
+      left: 0;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+ 
+  
+  .carousel {
+    width: 100%;
+    overflow: hidden;
+    height: 100%;
+  }
+  .carousel .paineis {
+    width: 500%;
+    overflow: hidden;
+    height: 100%;
+    animation: carousel 30s infinite;
+    position: relative;
+  }
+  .carousel article {
+    float: left;
+    width: 20%;
+  }
+  .carousel article img {
+    height: 100%;
+    width: 100%;
+  }
+  .carousel input[type=checkbox]:checked ~ .paineis {
+    animation-play-state: paused;
+    animation: go 10s;
+  }
+  
