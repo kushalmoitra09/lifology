@@ -1,0 +1,19 @@
+ul.topicGroup:after {
+    clear: both;
+    display: block;
+    content: "";
+}
+.topicItem {
+    float: left;
+    background: #F3F3F3;
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 30px;
+    margin:4px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.topicItem:hover {
+    background: #eff6fc;
+    color: white;
+}

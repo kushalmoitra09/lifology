@@ -1,0 +1,28 @@
+.subgroup
+.group {
+    list-style: none; /* Remove default bullets */
+}
+
+
+.group li::before {
+    content: "•";
+    color: #02C77D; 
+    font-weight: bold; 
+    display: inline-block; 
+    width: 1em; 
+    margin-left: 1rem; 
+    margin-top: 1rem;
+    font-size: 20px;
+    vertical-align: sub;
+}
+
+.subgroup li::before{
+    content: "•"; 
+    color: #878787;
+    font-weight: bold; 
+    display: inline-block; 
+    width: 1em; 
+    margin-left: 3rem; 
+    font-size: 20px;
+    vertical-align: sub;
+}

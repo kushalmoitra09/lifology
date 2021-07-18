@@ -1,52 +1,22 @@
 import { useState } from 'react'
 import {
-    ClockIcon,
-    CreditCardIcon,
-    ScaleIcon,
-    UserGroupIcon,
     BookmarkIcon
 } from '@heroicons/react/outline'
 import {
-    ArrowNarrowLeftIcon,
-    CheckIcon,
-    HomeIcon,
-    PaperClipIcon,
-    QuestionMarkCircleIcon,
     SearchIcon,
-    ThumbUpIcon,
-    UserIcon,
 } from '@heroicons/react/solid'
 import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { SchemeGetCareerFamilies, SchemeGetGrades, SchemeGetProfile } from '/helpers/GraphQLSchemes'
+import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
 import Constants from '/helpers/Constants.js'
 import useLocalStorage from '/helpers/useLocalStorage'
-import { useRouter } from 'next/router'
 import NavigationLayout from '/components/NavigationLayout'
 import HeaderLayout from '/components/HeaderLayout'
-import styles from '/styles/Magazine.module.css'
 import MetaLayout from '/components/MetaLayout'
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { SchemeGetUniversity } from '../../../helpers/GraphQLSchemes'
 
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
-const cards = [
-    { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
-    { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
-    { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
-    { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
-    { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
-    { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
-    // More items...
-]
-
 export default function University({ profile, university, token }) {
-    const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
@@ -143,7 +113,7 @@ export default function University({ profile, university, token }) {
                                                                                         id="path"
                                                                                         d="M 12.161 22.294 C 9.866 22.294 7.637 21.515 5.842 20.084 C 4.047 18.652 2.791 16.653 2.28 14.415 C 1.769 12.178 2.034 9.831 3.03 7.763 C 4.025 5.695 5.695 4.025 7.763 3.03 C 9.831 2.034 12.178 1.769 14.415 2.28 C 16.653 2.791 18.652 4.047 20.084 5.842 C 21.515 7.637 22.294 9.866 22.294 12.161 C 22.294 14.847 21.226 17.427 19.326 19.326 C 17.427 21.226 14.847 22.294 12.161 22.294 Z M 8.614 14.187 L 8.614 16.214 L 11.147 16.214 L 11.147 18.241 L 13.174 18.241 L 13.174 16.214 L 14.187 16.214 C 14.859 16.214 15.504 15.947 15.978 15.472 C 16.453 14.997 16.721 14.352 16.721 13.681 C 16.721 13.009 16.453 12.364 15.978 11.889 C 15.504 11.414 14.859 11.147 14.187 11.147 L 10.134 11.147 C 10.004 11.141 9.88 11.085 9.79 10.991 C 9.7 10.897 9.65 10.771 9.65 10.64 C 9.65 10.51 9.7 10.384 9.79 10.29 C 9.88 10.196 10.004 10.14 10.134 10.134 L 15.707 10.134 L 15.707 8.107 L 13.174 8.107 L 13.174 6.08 L 11.147 6.08 L 11.147 8.107 L 10.134 8.107 C 9.462 8.107 8.817 8.374 8.343 8.849 C 7.868 9.324 7.601 9.969 7.601 10.64 C 7.601 11.312 7.868 11.957 8.343 12.432 C 8.817 12.907 9.462 13.174 10.134 13.174 L 14.187 13.174 C 14.297 13.169 14.406 13.2 14.496 13.263 C 14.587 13.325 14.655 13.415 14.69 13.52 C 14.725 13.624 14.725 13.737 14.69 13.841 C 14.655 13.946 14.587 14.036 14.496 14.098 C 14.406 14.161 14.297 14.192 14.187 14.187 Z"
                                                                                         fill="#30c702"
-                                                                                        stroke-width="1" />
+                                                                                        strokeWidth="1" />
                                                                                 </svg>
                                                                                 <span className="inline-block text-sm align-middle ml-2" >$ {u.fee}</span>
 
@@ -162,7 +132,7 @@ export default function University({ profile, university, token }) {
                                                                                             id="path"
                                                                                             d="M 12.161 22.294 C 9.866 22.294 7.637 21.515 5.842 20.084 C 4.047 18.652 2.791 16.653 2.28 14.415 C 1.769 12.178 2.034 9.831 3.03 7.763 C 4.025 5.695 5.695 4.025 7.763 3.03 C 9.831 2.034 12.178 1.769 14.415 2.28 C 16.653 2.791 18.652 4.047 20.084 5.842 C 21.515 7.637 22.294 9.866 22.294 12.161 C 22.294 14.847 21.226 17.427 19.326 19.326 C 17.427 21.226 14.847 22.294 12.161 22.294 Z M 13.174 12.16 L 13.174 7.094 L 11.147 7.094 L 11.147 14.187 L 17.227 14.187 L 17.227 12.161 Z"
                                                                                             fill="#ffc400"
-                                                                                            stroke-width="1" />
+                                                                                            strokeWidth="1" />
                                                                                     </svg>
                                                                                     <span className="inline-block align-middle ml-2 text-sm">{u.duration}</span>
                                                                                 </div>
@@ -177,7 +147,7 @@ export default function University({ profile, university, token }) {
                                                                                         id="path"
                                                                                         d="M 17.227 19.254 L 19.254 19.254 L 19.254 11.147 L 13.174 11.147 L 13.174 19.254 L 15.201 19.254 L 15.201 13.174 L 17.227 13.174 Z M 3.04 19.254 L 3.04 4.053 C 3.04 3.875 3.087 3.7 3.176 3.546 C 3.265 3.392 3.393 3.264 3.547 3.175 C 3.701 3.087 3.876 3.04 4.054 3.04 L 18.241 3.04 C 18.51 3.04 18.767 3.147 18.957 3.337 C 19.147 3.527 19.254 3.784 19.254 4.053 L 19.254 9.12 L 21.281 9.12 L 21.281 19.254 L 22.294 19.254 L 22.294 21.281 L 2.027 21.281 L 2.027 19.254 Z M 7.093 11.147 L 7.093 13.174 L 9.121 13.174 L 9.121 11.147 Z M 7.093 15.2 L 7.093 17.227 L 9.121 17.227 L 9.121 15.2 Z M 7.093 7.093 L 7.093 9.12 L 9.121 9.12 L 9.121 7.093 Z"
                                                                                         fill="#000000"
-                                                                                        stroke-width="1" />
+                                                                                        strokeWidth="1" />
                                                                                 </svg>
                                                                                 <span className="inline-block align-middle ml-2 text-sm">TOEFL: 100</span>
                                                                             </div>
@@ -304,9 +274,6 @@ export default function University({ profile, university, token }) {
         </>
     )
 }
-// JobFamilies.getInitialProps = async (context) => {
-// const [authToken, setAuthToken] = useLocalStorage("authToken", "")
-// }
 
 export async function getServerSideProps(context) {
     const { token } = context.query;
@@ -330,7 +297,7 @@ export async function getServerSideProps(context) {
             return res.universityDetails[0]
         }).catch((networkErr) => {
             return {}
-        });
+        })
     console.log(university)
     const profileClient = new ApolloClient({
         uri: Constants.baseUrl + "/api/user",
@@ -338,14 +305,13 @@ export async function getServerSideProps(context) {
         headers: {
             Authorization: "Bearer " + token,
         },
-    });
+    })
     const profile = await queryGraph(profileClient, {}, SchemeGetProfile)
         .then((res) => {
             return res.profile
         }).catch((networkErr) => {
             return {};
-            // console.log(networkErr);
-        });
+        })
     return {
         props: { profile, university, token }
     }

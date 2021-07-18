@@ -1,48 +1,23 @@
 import Link from 'next/link'
-import { Fragment, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import {
-    ClockIcon,
-    CreditCardIcon,
-    ScaleIcon,
-    UserGroupIcon,
-    BookmarkIcon
-} from '@heroicons/react/outline'
-import {
-    ArrowNarrowLeftIcon,
-    CheckIcon,
-    HomeIcon,
-    PaperClipIcon,
-    QuestionMarkCircleIcon,
-    SearchIcon,
-    ThumbUpIcon,
-    UserIcon,
-} from '@heroicons/react/solid'
+import { useState } from 'react'
 import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { SchemeGetCareerFamilies, SchemeGetGrades, SchemeGetProfile } from '/helpers/GraphQLSchemes'
+import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
 import Constants from '/helpers/Constants.js'
 import useLocalStorage from '/helpers/useLocalStorage'
-import { useRouter } from 'next/router'
 import NavigationLayout from '/components/NavigationLayout'
 import HeaderLayout from '/components/HeaderLayout'
-import styles from '/styles/Magazine.module.css'
 import MetaLayout from '/components/MetaLayout'
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { SchemeCareerPools, SchemeGetUniversity } from '/helpers/GraphQLSchemes'
+import { SchemeCareerPools } from '/helpers/GraphQLSchemes'
+import VideoDialog from '../../../../components/dialog/VideoDialog'
+import { SchemeCareerFields } from '../../../../helpers/GraphQLSchemes'
 
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
-export default function JobFamily({ profile, jobFamily, token }) {
-    const router = useRouter()
+export default function JobFamily({ profile, jobFamily, careerFields, token }) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
-    console.log(jobFamily)
     const [openVideo, setOpenVideo] = useState(false)
 
     return (
@@ -86,75 +61,43 @@ export default function JobFamily({ profile, jobFamily, token }) {
                                                     Career Fields
                                                 </h2>
                                                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4 lg:grid-cols-4">
-                                                    <Link
-                                                        href={{
-                                                            pathname: '/career_explorer/job_families/' + jobFamily.id + '/accounting',
-                                                            query: { token: token }
-                                                        }}
-                                                    >
-                                                        <a>
-                                                            <div className="relative rounded shadow p-4 hover:shadow-xl active:shadow-sm duration-500 h-40" style={{ background: '#FF7A66' }}>
-                                                                <img src="/img/logoWhite.png" className="absolute h-5 w-5 right-4 " />
-                                                                <div className="text-white text-opacity-20 text-7xl font-bold select-none">A</div>
-                                                                <div className="absolute bottom-4">
-                                                                    <div className="text-sm text-white w-full font-medium" >Accounting</div>
-                                                                    <div className="mt-2 w-8 h-px rounded bg-white"></div>
+                                                    {careerFields.map((cf) => (
+                                                        <Link
+                                                            href={{
+                                                                pathname: '/career_explorer/job_families/' + jobFamily.id + '/career_field/' + cf.id,
+                                                                query: { token: token }
+                                                            }}>
+                                                            <a>
+                                                                <div className="group relative rounded shadow p-4 hover:shadow-xl active:shadow-sm duration-500 h-40" style={{ background: getColor() }}>
+                                                                    <img src="/img/logoWhite.png" className="absolute h-5 w-5 right-4 " />
+                                                                    <div className="text-white text-opacity-20 text-7xl font-bold select-none group-hover:text-opacity-100 duration-500">{cf.name.charAt(0)}</div>
+                                                                    <div className="absolute bottom-4 mr-12">
+                                                                        <div className="text-sm text-white w-full font-medium" >{cf.name}</div>
+                                                                        <div className="mt-2 w-4 h-0.5 rounded bg-white group-hover:w-full duration-500" ></div>
+                                                                    </div>
+                                                                    <svg className="absolute h-5 w-5 bottom-4 right-4 " fill="none" viewBox="0 0 24 24" stroke="white">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                                    </svg>
                                                                 </div>
-                                                                <svg className=" absolute h-5 w-5 bottom-4 right-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                                                </svg>
-                                                            </div>
-                                                        </a>
-                                                    </Link>
-                                                    <div className="relative rounded shadow p-4 hover:shadow-xl active:shadow-sm duration-500 h-40" style={{ background: '#9366FF' }}>
-                                                        <img src="/img/logoWhite.png" className="absolute h-5 w-5 right-4 " />
-                                                        <div className="text-white text-opacity-20 text-7xl font-bold select-none">B</div>
-                                                        <div className="absolute bottom-4">
-                                                            <div className="text-sm text-white w-full font-medium" >Banking</div>
-                                                            <div className="mt-2 w-8 h-px rounded bg-white"></div>
-                                                        </div>
-                                                        <svg className="absolute h-5 w-5 bottom-4 right-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                                        </svg>
-                                                    </div>
-                                                    <div className="relative rounded shadow p-4  hover:shadow-xl duration-500 h-40" style={{ background: '#6ED96E' }}>
-                                                        <img src="/img/logoWhite.png" className="absolute h-5 w-5 right-4 " />
-                                                        <div className="text-white text-opacity-20 text-7xl font-bold select-none">C</div>
-                                                        <div className="absolute bottom-4">
-                                                            <div className="text-sm text-white w-full font-medium" >CA</div>
-                                                            <div className="mt-2 w-8 h-px rounded bg-white"></div>
-                                                        </div>
-                                                        <svg className="absolute h-5 w-5 bottom-4 right-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                                        </svg>
-                                                    </div>
-                                                    <div className="relative rounded shadow p-4  hover:shadow-xl duration-500 h-40" style={{ background: '#66BDFF' }}>
-                                                        <img src="/img/logoWhite.png" className="absolute h-5 w-5 right-4 " />
-                                                        <div className="text-white text-opacity-20 text-7xl font-bold select-none">F</div>
-                                                        <div className="absolute bottom-4">
-                                                            <div className="text-sm text-white w-full font-medium" >Finance</div>
-                                                            <div className="mt-2 w-8 h-px rounded bg-white"></div>
-                                                        </div>
-                                                        <svg className="absolute h-5 w-5 bottom-4 right-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                                        </svg>
-                                                    </div>
+                                                            </a>
+                                                        </Link>
+                                                    ))}
                                                 </div>
-
                                             </div>
 
                                         </div>
 
                                         <section aria-labelledby="timeline-title" className="lg:col-start-3 lg:col-span-1">
-                                            <div className="bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
+
+                                            <div className=" bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
                                                 <h2 id="timeline-title" className="text-lg font-medium text-gray-900">
                                                     University Video
                                                 </h2>
-                                                <div className="relative">
-                                                    <img className=" rounded mt-2" src={jobFamily.thumbnail} />
-                                                    <a href="#" onClick={(event) => { setOpenVideo(true) }}>
+                                                <a href="#" onClick={(event) => { setOpenVideo(true) }}>
+                                                    <div className="group relative shadow hover:shadow-xl hover:scale-105 active:scale-100 duration-500">
+                                                        <img className="rounded mt-2 duration-500" src={jobFamily.thumbnail} />
                                                         <svg
-                                                            className="absolute h-12 w-12 top-1/2 left-1/2 transform -translate-x-2/4 -translate-y-2/4 hover:h-14 hover:w-14  duration-500"
+                                                            className="absolute h-12 w-12 top-1/2 left-1/2 transform -translate-x-2/4 -translate-y-2/4 duration-500"
                                                             viewBox="0 0 24 24"
                                                             id="vector">
                                                             <path
@@ -167,9 +110,8 @@ export default function JobFamily({ profile, jobFamily, token }) {
                                                                 d="M 9.5 14.67 L 9.5 9.33 C 9.5 8.54 10.38 8.06 11.04 8.49 L 15.19 11.16 C 15.8 11.55 15.8 12.45 15.19 12.84 L 11.04 15.51 C 10.38 15.94 9.5 15.46 9.5 14.67 Z"
                                                                 fill="#ffffff" />
                                                         </svg>
-                                                    </a>
-
-                                                </div>
+                                                    </div>
+                                                </a>
                                             </div>
                                             <div className="mt-4 bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
                                                 <h2 id="timeline-title" className="text-lg font-medium text-gray-900">
@@ -213,69 +155,20 @@ export default function JobFamily({ profile, jobFamily, token }) {
                         </footer>
                     </main>
                 </div>
-
-
             </div >
-            <Transition.Root show={openVideo} as={Fragment}>
-                <Dialog as="div" static className="fixed z-10 inset-0 overflow-y-auto" open={openVideo} onClose={setOpenVideo}>
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                        >
-                            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                        </Transition.Child>
 
-                        {/* This element is to trick the browser into centering the modal contents. */}
-                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-                            &#8203;
-                        </span>
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            enterTo="opacity-100 translate-y-0 sm:scale-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                        >
-                            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full sm:p-4">
-                                <div>
-                                    <div className="text-center">
-                                        <video className="w-full rounded" controls>
-                                            <source src={jobFamily.video} type="video/mp4" />
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                </div>
-                                <div className="mt-4 sm:mt-4">
-                                    <button
-                                        type="button"
-                                        className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none sm:text-sm"
-                                        onClick={() => setOpenVideo(false)}
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </Transition.Child>
-                    </div>
-                </Dialog>
-            </Transition.Root>
+            <VideoDialog showDialog={openVideo} setShowDialog={setOpenVideo} url={jobFamily.video} />
         </>
     )
 }
-// JobFamilies.getInitialProps = async (context) => {
-// const [authToken, setAuthToken] = useLocalStorage("authToken", "")
-// }
+
+const getColor = () => {
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16)
+    return "#" + randomColor
+}
 
 export async function getServerSideProps(context) {
-    const { token } = context.query;
+    const { token } = context.query
     if (token == null || token == '') {
         return {
             redirect: {
@@ -298,22 +191,27 @@ export async function getServerSideProps(context) {
             return {}
         });
     const jobFamily = datas.filter(x => x.id == context.params.id)[0];
+    const careerFields = await queryGraph(careerClient, { pool_id: parseInt(context.params.id) }, SchemeCareerFields)
+        .then((res) => {
+            return res.careerFields
+        }).catch((networkErr) => {
+            return {}
+        });
     const profileClient = new ApolloClient({
         uri: Constants.baseUrl + "/api/user",
         cache: new InMemoryCache(),
         headers: {
             Authorization: "Bearer " + token,
         },
-    });
+    })
     const profile = await queryGraph(profileClient, {}, SchemeGetProfile)
         .then((res) => {
             return res.profile
         }).catch((networkErr) => {
             return {};
-            // console.log(networkErr);
         });
     return {
-        props: { profile, jobFamily, token }
+        props: { profile, jobFamily, careerFields, token }
     }
 }
 

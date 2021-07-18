@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { ApolloClient, InMemoryCache } from "@apollo/client"
 import Constants from '../helpers/Constants'
 import { SchemeSendOTP, SchemeVerifyOTP } from '../helpers/GraphQLSchemes'
@@ -8,12 +7,12 @@ import { useRouter } from 'next/router'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { CheckIcon, ExclamationIcon } from '@heroicons/react/outline'
-import ProgressBar from '../components/ProgressBar'
 import PhoneNumberTab from '../components/login/PhoneNumberTab'
 import OTPVerifyTab from '../components/login/OTPVerifyTab'
 import DownloadLayout from '../components/DownloadLayout'
 import useLocalStorage from '../helpers/useLocalStorage'
 import MetaLayout from '../components/MetaLayout'
+import LoadingDialog from '../components/dialog/LoadingDialog'
 
 const client = new ApolloClient({
     uri: Constants.baseUrl + "/api/auth",
@@ -104,7 +103,7 @@ export default function Login() {
                             pathname: 'career_explorer',
                             query: { token: res.otpVerification.auth_token }
                         })
-                    }, 2000);
+                    }, 1000)
                     setAuthToken(res.otpVerification.auth_token);
                 } else {
                     setSignupDialog(true)
@@ -179,7 +178,7 @@ export default function Login() {
                                         <div>
                                             <a
                                                 href="#"
-                                                className="w-full rounded-full border border-gray-200 bg-gray-100 inline-flex px-4 py-2 justify-center text-gray-400 hover:border-indigo-700 hover:bg-indigo-700 hover:text-white duration-500"
+                                                className="w-full rounded-full border border-gray-200 bg-gray-100 inline-flex px-4 py-2 justify-center text-gray-400 hover:border-indigo-700 hover:bg-lblue hover:text-white duration-500"
                                             // className={styles.socialMediaButton}
                                             >
                                                 <span className="sr-only">Sign in with Facebook</span>
@@ -197,7 +196,7 @@ export default function Login() {
                                         <div>
                                             <a
                                                 href="#"
-                                                className="w-full rounded-full border border-gray-200 bg-gray-100 inline-flex px-4 py-2 justify-center text-gray-400 hover:border-indigo-700 hover:bg-indigo-700 hover:text-white duration-500"
+                                                className="w-full rounded-full border border-gray-200 bg-gray-100 inline-flex px-4 py-2 justify-center text-gray-400 hover:border-indigo-700 hover:bg-lblue hover:text-white duration-500"
                                             >
                                                 <span className="sr-only">Sign in with Twitter</span>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 640 640" className="self-center w-4 h-4" >
@@ -219,51 +218,7 @@ export default function Login() {
                 </div>
             </div>
 
-            <Transition.Root show={loadingDialog} as={Fragment}>
-                <Dialog as="div" static className="fixed z-10 inset-0 overflow-y-auto" open={loadingDialog} onClose={setLoadingDialog}>
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                        >
-                            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                        </Transition.Child>
-
-                        {/* This element is to trick the browser into centering the modal contents. */}
-                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-                            &#8203;
-                        </span>
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            enterTo="opacity-100 translate-y-0 sm:scale-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                        >
-                            <div
-                                className="w-min inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle  sm:p-6">
-
-                                <div className="sm:flex sm:items-start m-4">
-
-                                    <div className="mt-3 text-center sm:mt-0 sm:text-left">
-                                        {/* <Step /> */}
-                                        <ProgressBar />
-                                    </div>
-                                    <button className="h-0 w-0 overflow-hidden" />
-
-                                </div>
-                            </div>
-                        </Transition.Child>
-                    </div>
-                </Dialog>
-            </Transition.Root>
+            <LoadingDialog showDialog={loadingDialog} setShowDialog={setLoadingDialog} />
 
             <Transition.Root show={successDialog} as={Fragment}>
                 <Dialog as="div" static className="fixed z-10 inset-0 overflow-y-auto" open={successDialog} onClose={setSuccessDialog}>
@@ -293,7 +248,7 @@ export default function Login() {
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+                            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-4">
                                 <div>
                                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
                                         <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
@@ -302,7 +257,7 @@ export default function Login() {
                                         <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
                                             Login successful
                                         </Dialog.Title>
-                                        <button className="h-0 w-0 overflow-hidden" />
+                                        <button className="absolute h-0 w-0 overflow-hidden" />
                                     </div>
                                 </div>
                             </div>
@@ -453,12 +408,3 @@ export default function Login() {
         </>
     )
 }
-
-// export async function getStaticProps({ params }) {
-//     const req = await fetch('http://localhost:3000/api/hello');
-//     const data = await req.json();
-//     return {
-//         props: { r: data }
-//     }
-// }
-//getServerSideProps, getStaticPaths

@@ -3,20 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8080",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 8080",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test:cypress": "NODE_ENV=test cypress open",
+    "lint": "eslint .",
+    "lint:watch": "esw . --watch --cache",
+    "lint:watchAll": "esw . --watch",
+    "circleci:run": "circleci local execute --job $JOB"
   },
   "dependencies": {
     "@apollo/client": "^3.3.20",
     "@headlessui/react": "^1.3.0",
     "@heroicons/react": "^1.0.1",
+    "chart.js": "^3.4.1",
     "graphql": "^15.5.1",
+    "keen-slider": "^5.5.1",
     "next": "latest",
     "next-fonts": "^1.5.1",
     "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.0",
+    "react-chartjs-2": "^3.0.3",
     "react-dom": "^17.0.2",
-    "react-multi-carousel": "^2.6.3"
+    "react-drag-reorder": "^1.0.0",
+    "react-expand-animated": "^1.0.2",
+    "react-multi-carousel": "^2.6.3",
+    "react-reorder": "^3.0.0-alpha.7"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.4",

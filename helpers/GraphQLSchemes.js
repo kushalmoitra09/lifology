@@ -172,6 +172,22 @@ query{
 }
 `;
 
+export const SchemeGetUniversityState = gql`
+query{
+  universityState(country:"India"){
+      state
+  }
+}
+`;
+
+export const SchemeGetUniversityCity = gql`
+query{
+  universityCity(state:"Uttar Pradesh"){
+      city
+  }
+}
+`;
+
 export const SchemeGetAllUniversity = gql`
 query{
   allUniversity(lang_id:1,filter:{pool_id:1,field_id:1,ranking:"Times Rank"}){
@@ -287,5 +303,141 @@ query{
     personality_match
     orientation_match
   }
+}
+`;
+
+export const SchemeCareerFields = gql`
+query careerFields($pool_id:Int!){
+  careerFields(lang_id:1,pool_id:$pool_id){
+    id
+    pool_id
+    name
+    image
+    description
+    video
+    thumbnail
+    topics
+    {
+        name
+        image
+    }
+    skills
+    {
+        name
+        image
+    }
+    employment_areas
+    {
+        name
+        image
+    }
+  }
+}
+`;
+
+export const SchemeGetUniversities = gql`
+query allUniversity($pool_id:Int!,$field_id:Int!){
+  allUniversity(lang_id:1,filter:{pool_id:$pool_id,field_id:$field_id,ranking:"Times Rank"}){
+    title
+    university{
+    id
+    name
+    description
+    website
+    logo
+    city
+    state
+    country
+    }
+  }
+}
+`;
+
+export const SchemeGetAssessments = gql`
+query{
+  assessments{
+    id
+    title
+    subtitle
+    dash_cards_image
+    mychild_image
+    instruction
+    icon
+    lang_id
+    assessment_type
+    description
+    assessment_status
+    total_questions
+    attempted_questions
+    questions_count
+    reports{
+      id
+      title
+      image
+      description
+      label_query{
+        id
+        label
+        query
+        description
+      }
+    }
+  }
+}
+`;
+
+export const SchemeGetAssessment = gql`
+query assessmentDetails($id: Int!){
+  assessmentDetails(id : $id){
+    id
+    title
+    subtitle
+    dash_cards_image
+    mychild_image
+    instruction
+    icon
+    lang_id
+    assessment_type
+    description
+    assessment_status
+    total_questions
+    attempted_questions
+    questions_count
+    reports{
+      id
+      title
+      image
+      description
+      label_query{
+        id
+        label
+        query
+        description
+      }
+    }
+  }
+}
+`;
+
+export const SchemeGetAssessmentQuestion = gql`
+query assessmentQuestions($assessment_type:Int!, $assessment_id:Int!){
+  assessmentQuestions(assessment_type:$assessment_type,lang_id:1,assessment_id:$assessment_id,platform:"WEB"){
+    id,
+    assessment_id
+    lang_id
+    question_title
+    total_questions
+    attempted_questions
+    score_options{
+      label
+      score
+    }
+  }
+}
+`;
+
+export const SchemeAnswerAssessmentQuestion = gql`
+mutation assessmentAnswer($assessment_type:Int!, $assessment_id: Int!, $question_id: Int!, $scores: [Int!]!){
+  assessmentAnswer(assessment_type:$assessment_type,assessment_id:$assessment_id,lang_id:1,question_id:$question_id,scores:$scores)
 }
 `;

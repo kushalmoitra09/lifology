@@ -28,28 +28,6 @@ import MetaLayout from '../../components/MetaLayout'
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
-const responsive = {
-    desktop: {
-        breakpoint: { max: 3000, min: 1024 },
-        items: 3,
-        slidesToSlide: 3 // optional, default to 1.
-    },
-    tablet: {
-        breakpoint: { max: 1024, min: 464 },
-        items: 2,
-        slidesToSlide: 2 // optional, default to 1.
-    },
-    mobile: {
-        breakpoint: { max: 464, min: 0 },
-        items: 1,
-        slidesToSlide: 1 // optional, default to 1.
-    }
-}
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
 const cards = [
     { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
     { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
@@ -58,57 +36,6 @@ const cards = [
     { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
     { heading: 'FACT CHECK: Is Bitcoin mining environmentally unfriendly?', subheading: 'Coin base in the Coin Blog', image: '/img/career-guidence.png', date: 'May 25', read: '5 min read' },
     // More items...
-]
-const attachments = [
-    { name: 'resume_front_end_developer.pdf', href: '#' },
-    { name: 'coverletter_front_end_developer.pdf', href: '#' },
-]
-const eventTypes = {
-    applied: { icon: UserIcon, bgColorClass: 'bg-gray-400' },
-    advanced: { icon: ThumbUpIcon, bgColorClass: 'bg-blue-500' },
-    completed: { icon: CheckIcon, bgColorClass: 'bg-green-500' },
-}
-const timeline = [
-    {
-        id: 1,
-        type: eventTypes.applied,
-        content: 'Applied to',
-        target: 'Front End Developer',
-        date: 'Sep 20',
-        datetime: '2020-09-20',
-    },
-    {
-        id: 2,
-        type: eventTypes.advanced,
-        content: 'Advanced to phone screening by',
-        target: 'Bethany Blake',
-        date: 'Sep 22',
-        datetime: '2020-09-22',
-    },
-    {
-        id: 3,
-        type: eventTypes.completed,
-        content: 'Completed phone screening with',
-        target: 'Martha Gardner',
-        date: 'Sep 28',
-        datetime: '2020-09-28',
-    },
-    {
-        id: 4,
-        type: eventTypes.advanced,
-        content: 'Advanced to interview by',
-        target: 'Bethany Blake',
-        date: 'Sep 30',
-        datetime: '2020-09-30',
-    },
-    {
-        id: 5,
-        type: eventTypes.completed,
-        content: 'Completed interview with',
-        target: 'Katherine Snyder',
-        date: 'Oct 4',
-        datetime: '2020-10-04',
-    },
 ]
 
 export default function Magazine({ profile, token }) {
@@ -249,9 +176,6 @@ export default function Magazine({ profile, token }) {
         </>
     )
 }
-// JobFamilies.getInitialProps = async (context) => {
-// const [authToken, setAuthToken] = useLocalStorage("authToken", "")
-// }
 
 export async function getServerSideProps(context) {
     const { token } = context.query;
