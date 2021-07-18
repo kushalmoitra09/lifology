@@ -59,7 +59,7 @@ export default function MyChild({ profile, assessments, token }) {
                                                         <div key={card.name} className="group relative bg-white overflow-hidden shadow hover:shadow-xl hover:scale-105 active:scale-100 active:shadow-sm rounded bg-cover duration-500 "
                                                             style={{ height: '200px', }}
                                                         >
-                                                            <img src={card.dash_cards_image} className="rounded w-full object-cover group-hover:scale-150 group-hover:rotate-12 group-active:rotate-0 group-active:scale-100 duration-500" style={{ height: '200px' }} />
+                                                            <img src={card.dash_cards_image} className="rounded w-full object-cover group-hover:scale-150 group-hover:rotate-12 group-active:rotate-0 group-active:scale-100 duration-500 bg-gray-400" style={{ height: '200px' }} />
                                                             <div className="absolute p-4 top-0 w-full">
                                                                 <div className="text-white w-9/12 font-medium text-xl ">{card.title}</div>
                                                                 <div className="text-white w-9/12 text-sm mt-2">{card.subtitle}</div>
@@ -67,8 +67,9 @@ export default function MyChild({ profile, assessments, token }) {
                                                             </div>
                                                             <div className="flex absolute bottom-4 right-4 scale-0 group-hover:scale-100 duration-500 translate-x-full group-hover:translate-x-0">
                                                                 <div className="self-center font-medium text-lg text-white">View Report</div>
-                                                                <svg className="h-12 w-12" viewBox="0 0 20 20" fill="white">
-                                                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+
+                                                                <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="white">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                                                 </svg>
                                                             </div>
                                                         </div>

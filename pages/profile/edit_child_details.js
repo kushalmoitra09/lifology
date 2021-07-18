@@ -191,7 +191,7 @@ export default function EditChildDetails({ profile, grades, token }) {
                                                                             <label htmlFor={g.gender} className={styles.radioField}>
                                                                                 {
                                                                                     g.gender.toLowerCase() == profile.child_details.gender.toLowerCase() ?
-                                                                                        <input type="radio" id={g.gender} name="gender" tabIndex={g.id} value={g.gender} checked />
+                                                                                        <input type="radio" id={g.gender} name="gender" tabIndex={g.id} value={g.gender} defaultChecked="true" />
                                                                                         :
                                                                                         <input type="radio" id={g.gender} name="gender" tabIndex={g.id} value={g.gender} />
                                                                                 }

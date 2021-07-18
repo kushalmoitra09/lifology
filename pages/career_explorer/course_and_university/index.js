@@ -90,7 +90,7 @@ export default function CourceAndUniversity({ profile, countries, universities, 
 
                                     <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg mt-4 bg-white p-4">
 
-                                        <div class=" flex flex-wrap content-start ...">
+                                        <div className=" flex flex-wrap content-start ...">
                                             <div className="font-medium text-xl ">Explore Lists of all Universities</div>
                                             <div>
                                                 <div className="flex absolute rounded bg-lgrey focus-within:text-gray-600 " style={{ marginLeft: "20rem", position: "sticky" }}>
@@ -168,8 +168,8 @@ export default function CourceAndUniversity({ profile, countries, universities, 
                                                 return "";
                                             }).map((u) => (
                                                 <Link href={{
-                                                    pathname: 'course_and_university/' + u.id,
-                                                    query: { token: authToken }
+                                                    pathname: '/career_explorer/course_and_university/' + u.id,
+                                                    query: { token: token }
                                                 }}>
                                                     <a>
                                                         <div className="h-full bg-white overflow-hidden shadow rounded p-4 hover:shadow-xl duration-500">
@@ -228,7 +228,7 @@ export default function CourceAndUniversity({ profile, countries, universities, 
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div style={{ marginLeft: '800px' }} className="inline-block align-middle  bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+                            <div className="inline-block align-middle  bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
                                 <div className="sm:flex sm:items-start">
                                     <div className="text-center sm:text-left w-full">
                                         <Dialog.Title as="h3" className="w-full text-lg leading-6 font-medium text-gray-900 text-center">

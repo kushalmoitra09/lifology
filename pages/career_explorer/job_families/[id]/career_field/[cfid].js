@@ -13,7 +13,7 @@ import MetaLayout from '/components/MetaLayout'
 import "react-multi-carousel/lib/styles.css";
 import { SchemeCareerPools, SchemeCareerFields, SchemeGetProfile, SchemeGetUniversities } from '/helpers/GraphQLSchemes'
 import VideoDialog from '/components/dialog/VideoDialog'
-import styles from '/styles/careerField.module.css'
+import styles from '/styles/CareerField.module.css'
 
 import classNames from '/helpers/classNames'
 
