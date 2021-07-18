@@ -96,7 +96,10 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                         </a>
                                     </Link>
                                     <Link
-                                        href="#">
+                                        href={{
+                                            pathname: '/my_child',
+                                            query: { token: authToken }
+                                        }}>
                                         <a
                                             className={classNames(
                                                 index == 2 ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:text-white hover:bg-cyan-600',
@@ -195,7 +198,7 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                 src="/img/logoBlue.png"
                                 alt="Lifology Logo"
                             />
-                            <span className="text-white self-center font-bold pl-4 text-xl tracking-wide text-lblue">LIFOLOGY</span>
+                            <span className="text-white self-center font-bold pl-2 text-xl tracking-wide text-lblue">LIFOLOGY</span>
                         </div>
                         <nav className="mt-5 flex-1 flex flex-col divide-y divide-cyan-800 overflow-y-auto relative" aria-label="Sidebar">
                             <div className="px-4 space-y-1 mt-4">
@@ -218,7 +221,10 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                     </a>
                                 </Link>
                                 <Link
-                                    href="#">
+                                    href={{
+                                        pathname: '/my_child',
+                                        query: { token: authToken }
+                                    }}>
                                     <a
                                         className={classNames(
                                             index == 2 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',

@@ -16,7 +16,7 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                 <a
                     href="#"
                     className={classNames(
-                        index == 1 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
+                        index == 1 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
                         "font-medium text-sm p-2 rounded-md items-center flex duration-500"
                     )}
                     onClick={() => {
@@ -26,7 +26,7 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                         })
                     }}
                 >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 1 ? 'white' : 'black'}>
+                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 1 ? 'white' : 'currentColor'}>
                         <g>
 
                             <path
@@ -39,11 +39,11 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                 <a
                     href="#"
                     className={classNames(
-                        index == 2 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
+                        index == 2 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
                         "font-medium text-sm p-2 rounded-md items-center flex duration-500"
                     )}
                 >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 2 ? 'white' : 'black'}>
+                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 2 ? 'white' : 'currentColor'}>
                         <g>
                             <path
                                 d="M 12 2 C 9.488 2.002 7.068 2.95 5.223 4.654 C 3.378 6.358 2.241 8.697 2.04 11.2 L 7.4 13.413 C 7.869 13.092 8.425 12.92 8.993 12.921 C 9.046 12.921 9.093 12.921 9.15 12.926 L 11.534 9.474 L 11.534 9.425 C 11.535 8.426 11.934 7.467 12.642 6.761 C 13.349 6.055 14.309 5.659 15.309 5.66 C 16.308 5.661 17.267 6.06 17.973 6.767 C 18.679 7.475 19.075 8.435 19.074 9.434 C 19.073 10.434 18.674 11.393 17.967 12.099 C 17.259 12.805 16.299 13.201 15.3 13.2 L 15.213 13.2 L 11.813 15.626 L 11.813 15.759 C 11.815 16.461 11.555 17.14 11.084 17.661 C 10.613 18.182 9.965 18.51 9.266 18.579 C 8.567 18.649 7.867 18.455 7.302 18.037 C 6.738 17.619 6.35 17.005 6.213 16.316 L 2.385 14.725 C 3.064 17.123 4.616 19.183 6.735 20.497 C 8.853 21.812 11.388 22.287 13.838 21.831 C 16.289 21.374 18.482 20.017 19.985 18.029 C 21.488 16.04 22.194 13.559 21.964 11.077 C 21.734 8.595 20.584 6.286 18.741 4.608 C 16.898 2.929 14.493 1.998 12 2 Z M 7.078 16.667 C 7.314 17.162 7.734 17.547 8.248 17.739 C 8.763 17.932 9.332 17.917 9.835 17.698 C 10.339 17.48 10.738 17.074 10.949 16.567 C 11.163 16.054 11.167 15.478 10.96 14.963 C 10.754 14.447 10.353 14.033 9.845 13.809 C 9.337 13.586 8.76 13.571 8.241 13.767 L 9.51 14.292 C 9.88 14.46 10.17 14.765 10.319 15.143 C 10.467 15.521 10.464 15.942 10.308 16.317 C 10.152 16.692 9.856 16.992 9.484 17.153 C 9.111 17.314 8.69 17.324 8.31 17.181 L 7.082 16.673 Z M 17.818 9.422 C 17.818 8.756 17.553 8.116 17.082 7.645 C 16.611 7.174 15.971 6.909 15.305 6.909 C 14.639 6.909 13.999 7.174 13.528 7.645 C 13.057 8.116 12.792 8.756 12.792 9.422 C 12.792 10.088 13.057 10.728 13.528 11.199 C 13.999 11.67 14.639 11.935 15.305 11.935 C 15.971 11.934 16.61 11.669 17.081 11.198 C 17.552 10.727 17.817 10.088 17.818 9.422 Z M 15.31 7.53 C 15.811 7.53 16.291 7.729 16.645 8.083 C 16.999 8.437 17.198 8.917 17.198 9.418 C 17.198 9.919 16.999 10.399 16.645 10.753 C 16.291 11.107 15.811 11.306 15.31 11.306 C 14.809 11.306 14.329 11.107 13.975 10.753 C 13.621 10.399 13.422 9.919 13.422 9.418 C 13.423 8.918 13.622 8.437 13.976 8.084 C 14.329 7.73 14.81 7.531 15.31 7.53 Z"
@@ -55,7 +55,7 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                 <a
                     href="#"
                     className={classNames(
-                        index == 3 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
+                        index == 3 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
                         "font-medium text-sm p-2 rounded-md items-center flex duration-500"
                     )}
                     onClick={() => {
@@ -65,7 +65,7 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                         })
                     }}
                 >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 3 ? 'white' : 'black'}>
+                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 3 ? 'white' : 'currentColor'}>
                         <g>
                             <path
                                 d="M 16.456 1.315 L 22.027 6.657 L 22.027 21.624 C 22.021 21.911 21.901 22.184 21.693 22.383 C 21.486 22.582 21.208 22.69 20.921 22.684 L 3.079 22.684 C 2.793 22.688 2.516 22.579 2.309 22.38 C 2.102 22.182 1.981 21.91 1.973 21.624 L 1.973 2.375 C 1.979 2.088 2.099 1.815 2.307 1.616 C 2.514 1.417 2.792 1.309 3.079 1.315 Z M 10.886 6.657 L 10.886 8.794 L 13.114 8.794 L 13.114 6.657 Z M 10.886 10.931 L 10.886 17.342 L 13.114 17.342 L 13.114 10.931 Z"
@@ -83,11 +83,11 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                         })
                     }}
                     className={classNames(
-                        index == 4 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
+                        index == 4 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
                         "font-medium text-sm p-2 rounded-md items-center flex duration-500"
                     )}
                 >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 4 ? 'white' : 'black'}>
+                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 4 ? 'white' : 'currentColor'}>
                         <g>
                             <path
                                 d="M 19.75 14.725 L 19.75 18.6 C 19.751 18.878 19.646 19.147 19.457 19.351 C 19.267 19.555 19.008 19.68 18.73 19.7 C 18.251 19.733 17.859 19.75 17.556 19.75 C 14.474 19.75 11.447 18.939 8.778 17.398 C 6.109 15.858 3.892 13.641 2.352 10.972 C 0.811 8.303 0 5.276 0 2.194 Q 0 1.74 0.05 1.02 C 0.07 0.743 0.194 0.484 0.397 0.295 C 0.6 0.106 0.868 0.001 1.145 0 L 5.025 0 C 5.161 0 5.292 0.051 5.393 0.142 C 5.494 0.233 5.557 0.359 5.571 0.494 C 5.596 0.746 5.619 0.947 5.641 1.1 C 5.859 2.622 6.306 4.102 6.966 5.49 C 7.017 5.596 7.028 5.717 6.999 5.83 C 6.969 5.944 6.901 6.044 6.805 6.112 L 4.438 7.8 C 5.885 11.172 8.575 13.862 11.947 15.309 L 13.637 12.946 C 13.706 12.849 13.807 12.78 13.922 12.75 C 14.037 12.721 14.159 12.732 14.266 12.783 C 15.654 13.442 17.134 13.888 18.655 14.105 C 18.808 14.127 19.008 14.151 19.255 14.175 C 19.39 14.189 19.515 14.252 19.606 14.353 C 19.698 14.454 19.748 14.585 19.748 14.721 Z"
@@ -99,7 +99,7 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                 <a
                     href="#"
                     className={classNames(
-                        index == 5 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
+                        index == 5 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
                         "font-medium text-sm p-2 rounded-md items-center flex duration-500"
                     )}
                     onClick={() => {
@@ -109,7 +109,7 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                         })
                     }}
                 >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 5 ? 'white' : 'black'}>
+                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 5 ? 'white' : 'currentColor'}>
                         <g>
                             <path
                                 d="M 22 10 L 12 10 L 12 17.382 C 11.999 18.073 12.151 18.756 12.445 19.381 C 12.739 20.007 13.168 20.56 13.7 21 L 3 21 C 2.735 21 2.48 20.895 2.293 20.707 C 2.105 20.52 2 20.265 2 20 L 2 4 C 2 3.735 2.105 3.48 2.293 3.293 C 2.48 3.105 2.735 3 3 3 L 10.414 3 L 12.414 5 L 21 5 C 21.265 5 21.52 5.105 21.707 5.293 C 21.895 5.48 22 5.735 22 6 Z M 14 12 L 22 12 L 22 17.382 C 22 17.823 21.892 18.257 21.685 18.645 C 21.478 19.034 21.179 19.366 20.813 19.612 L 18 21.5 L 15.187 19.615 C 14.821 19.369 14.521 19.037 14.314 18.647 C 14.107 18.258 13.999 17.824 14 17.383 Z"
@@ -123,14 +123,14 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                 Follow Us on
             </h2>
             <div className="flex">
-                <a href="#">
+                <a href="#" className="text-gray-400 hover:text-blue-600 hover:scale-110 active:scale-100 duration-500">
                     <svg
                         className="w-7 h-7 mt-2"
                         viewBox="0 0 43 43">
                         <path
                             id="path"
                             d="M 21.654 0 C 15.913 0 10.402 2.3 6.342 6.389 C 2.283 10.478 0 16.029 0 21.812 C 0 27.595 2.283 33.146 6.342 37.235 C 10.402 41.324 15.913 43.624 21.654 43.624 C 27.395 43.624 32.906 41.324 36.966 37.235 C 41.025 33.146 43.308 27.595 43.308 21.812 C 43.308 16.029 41.025 10.478 36.966 6.389 C 32.906 2.3 27.395 0 21.654 0 Z"
-                            fill="#9a9a9a"
+                            fill="currentColor"
                             strokeWidth="1" />
                         <path
                             id="path_1"
@@ -139,14 +139,14 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                             strokeWidth="1" />
                     </svg>
                 </a>
-                <a href="#">
+                <a href="#" className="text-gray-400 hover:text-blue-400 hover:scale-110 active:scale-100 duration-500">
                     <svg
                         className="w-7 h-7 mt-2 ml-2"
                         viewBox="0 0 44 43">
                         <path
                             id="path"
                             d="M 22 0 C 16.167 0 10.568 2.267 6.444 6.297 C 2.319 10.328 0 15.8 0 21.5 C 0 27.2 2.319 32.672 6.444 36.703 C 10.568 40.733 16.167 43 22 43 C 27.833 43 33.432 40.733 37.556 36.703 C 41.681 32.672 44 27.2 44 21.5 C 44 15.8 41.681 10.328 37.556 6.297 C 33.432 2.267 27.833 0 22 0 Z"
-                            fill="#9a9a9a"
+                            fill="currentColor"
                             strokeWidth="1" />
                         <path
                             id="path_1"
@@ -155,14 +155,14 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                             strokeWidth="1" />
                     </svg>
                 </a>
-                <a href="#">
+                <a href="#" className="text-gray-400 hover:text-yellow-500 hover:scale-110 active:scale-100 duration-500">
                     <svg
                         className="w-7 h-7 mt-2 ml-2"
                         viewBox="0 0 44 43">
                         <path
                             id="path"
                             d="M 22 0 C 16.167 0 10.568 2.267 6.444 6.297 C 2.319 10.328 0 15.8 0 21.5 C 0 27.2 2.319 32.672 6.444 36.703 C 10.568 40.733 16.167 43 22 43 C 27.833 43 33.432 40.733 37.556 36.703 C 41.681 32.672 44 27.2 44 21.5 C 44 15.8 41.681 10.328 37.556 6.297 C 33.432 2.267 27.833 0 22 0 Z"
-                            fill="#9a9a9a"
+                            fill="currentColor"
                             strokeWidth="1" />
                         <path
                             id="path_1"
@@ -171,14 +171,14 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                             strokeWidth="1" />
                     </svg>
                 </a>
-                <a href="#">
+                <a href="#" className="text-gray-400 hover:text-indigo-900 hover:scale-110 active:scale-100 duration-500">
                     <svg
                         className="w-7 h-7 mt-2 ml-2"
                         viewBox="0 0 43 43">
                         <path
                             id="path"
                             d="M 21.5 0 C 15.8 0 10.328 2.267 6.297 6.297 C 2.267 10.328 0 15.8 0 21.5 C 0 27.2 2.267 32.672 6.297 36.703 C 10.328 40.733 15.8 43 21.5 43 C 27.2 43 32.672 40.733 36.703 36.703 C 40.733 32.672 43 27.2 43 21.5 C 43 15.8 40.733 10.328 36.703 6.297 C 32.672 2.267 27.2 0 21.5 0 Z"
-                            fill="#9a9a9a"
+                            fill="currentColor"
                             strokeWidth="1" />
                         <path
                             id="path_1"
@@ -188,14 +188,14 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                     </svg>
                 </a>
 
-                <a href="#">
+                <a href="#" className="text-gray-400 hover:text-red-500 hover:scale-110 active:scale-100 duration-500">
                     <svg
                         className="w-7 h-7 mt-2 ml-2"
                         viewBox="0 0 43 43">
                         <path
                             id="path"
                             d="M 21.5 0 C 15.8 0 10.328 2.267 6.297 6.297 C 2.267 10.328 0 15.8 0 21.5 C 0 27.2 2.267 32.672 6.297 36.703 C 10.328 40.733 15.8 43 21.5 43 C 27.2 43 32.672 40.733 36.703 36.703 C 40.733 32.672 43 27.2 43 21.5 C 43 15.8 40.733 10.328 36.703 6.297 C 32.672 2.267 27.2 0 21.5 0 Z"
-                            fill="#9a9a9a"
+                            fill="currentColor"
                             strokeWidth="1" />
                         <path
                             id="path_1"
