@@ -81,7 +81,7 @@ export default function Profile({ profile, token }) {
                                         <span className="self-center inline-block text-sm">Verified</span>
                                     </div>
                                     <div className="flex mt-1">
-                                        <div className="text-base text-gray-400">{profile.email}</div>
+                                        <div className="text-base text-gray-400">{profile.email.toLowerCase()}</div>
                                         <svg
                                             className="ml-4 mr-2 self-center"
                                             viewBox="0 0 32 32"

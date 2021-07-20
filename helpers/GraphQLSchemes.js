@@ -108,7 +108,7 @@ query{
 `;
 
 export const SchemeEditProfile = gql`
-mutation editProfile($profile_image:String,$country_abbr:String!, $email:String!$country_code:String!,$mobile_number:String!, $name:String!, $child_name:String!, $gender:String!, $grade:String!, $stream:String!, $school_name:String!, $stream_id:Int!){
+mutation editProfile($profile_image:String,$country_abbr:String!, $email:String!$country_code:String!,$mobile_number:String!, $name:String!, $child_name:String!, $gender:String!, $grade:String!, $stream:String, $school_name:String!, $stream_id:Int){
   editProfile(editProfileInput:{profile_image:$profile_image,country_abbr:$country_abbr,email:$email,country_code:$country_code,mobile_number:$mobile_number,name:$name,child_name:$child_name,gender:$gender,grade:$grade,stream:$stream,school_name:$school_name,stream_id:$stream_id}){
     id
     country_abbr
@@ -439,5 +439,38 @@ query assessmentQuestions($assessment_type:Int!, $assessment_id:Int!){
 export const SchemeAnswerAssessmentQuestion = gql`
 mutation assessmentAnswer($assessment_type:Int!, $assessment_id: Int!, $question_id: Int!, $scores: [Int!]!){
   assessmentAnswer(assessment_type:$assessment_type,assessment_id:$assessment_id,lang_id:1,question_id:$question_id,scores:$scores)
+}
+`;
+
+export const SchemeGetMIOReport = gql`
+query{
+  intelligenceOrientation(lang_id:1)
+  {
+    spread_characteristics{
+      expert{
+        key
+        info
+      }
+      advanced
+      {
+        key
+        info
+      }
+       learner{
+        key
+        info
+      }
+      novice
+      {
+        key
+        info
+      }
+    }
+    orientation_details{
+      title
+      percentage
+      content
+    }
+  }
 }
 `;

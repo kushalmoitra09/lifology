@@ -327,11 +327,11 @@ export default function SignUpStep3({ grades, prefs }) {
                         </div>
                     </div>
 
-
                     <DownloadLayout />
 
                 </div>
             </div >
+
             <Transition.Root show={prefDialog} as={Fragment}>
                 <Dialog
                     as="div"

@@ -121,7 +121,7 @@ export default function EditPersonalDetails({ profile, token }) {
                                                                         id="path_2"
                                                                         d="M 52 68 L 70 68 L 70 70 L 52 70 Z M 62 54.828 L 62 66 L 60 66 L 60 54.828 L 53.929 60.9 L 52.515 59.486 L 61 51 L 69.485 59.485 L 68.071 60.9 L 62 54.83 Z"
                                                                         fill="currentColor"
-                                                                        stroke-width="1" />
+                                                                        strokeWidth="1" />
                                                                 </svg>
                                                             </div>
                                                             <input className="absolute left-0 top-0 w-full h-full opacity-0" id="file" name="file" type="file" />
@@ -170,7 +170,7 @@ export default function EditPersonalDetails({ profile, token }) {
                                                             <div>
                                                                 <label className="text-black pb-2 block text-xl">Email</label>
                                                                 <input id="email" name="email" type="email" placeholder="something@lifology.com"
-                                                                    className="rounded-full bg-gray-100 px-3 py-2 text-sm w-full outline-none border focus:border-indigo-700 duration-500" defaultValue={profile.email} />
+                                                                    className="rounded-full bg-gray-100 px-3 py-2 text-sm w-full outline-none border focus:border-indigo-700 duration-500" defaultValue={profile.email.toLowerCase()} />
                                                             </div>
                                                         </div>
                                                     </div>

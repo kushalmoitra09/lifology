@@ -2,18 +2,10 @@
   "name": "with-tailwindcss",
   "version": "0.1.0",
   "private": true,
- "scripts": {
-    "dev": "next dev -p 8080",
+  "scripts": {
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 8080",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=test jest --watch",
-    "test:coverage": "NODE_ENV=test jest --coverage",
-    "test:cypress": "NODE_ENV=test cypress open",
-    "lint": "eslint .",
-    "lint:watch": "esw . --watch --cache",
-    "lint:watchAll": "esw . --watch",
-    "circleci:run": "circleci local execute --job $JOB"
+    "start": "next start"
   },
   "dependencies": {
     "@apollo/client": "^3.3.20",
@@ -28,10 +20,8 @@
     "react-beautiful-dnd": "^13.1.0",
     "react-chartjs-2": "^3.0.3",
     "react-dom": "^17.0.2",
-    "react-drag-reorder": "^1.0.0",
     "react-expand-animated": "^1.0.2",
-    "react-multi-carousel": "^2.6.3",
-    "react-reorder": "^3.0.0-alpha.7"
+    "react-multi-carousel": "^2.6.3"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.4",
