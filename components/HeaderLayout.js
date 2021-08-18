@@ -11,14 +11,12 @@ import {
     SearchIcon,
 } from '@heroicons/react/solid'
 import { useRouter } from 'next/router'
-import useLocalStorage from '../helpers/useLocalStorage'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken }) => {
-    // console.log(profile.profile_image);
+const HeaderLayout = ({ setSidebarOpen, profile, title }) => {
     const router = useRouter()
     return (
         <div className="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:border-none shadow" >
@@ -33,18 +31,19 @@ const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken 
             <div className="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8">
                 <div className="flex-1 flex font-bold self-center">
                     <div >
-                        <h2 className="text-xl ">{title}</h2>
+                        <h2 className="sm:text-xl text-sm">{title}</h2>
+
                     </div>
                 </div>
                 <div className="ml-4 flex items-center md:ml-6">
-                    <button className="mr-2 bg-white p-3 lg:p-3 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none  lg:rounded-md lg:hover:bg-gray-200 lg:bg-gray-100 duration-500">
+                    {/* <button className="mr-2 bg-white p-3 lg:p-3 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none  lg:rounded-md lg:hover:bg-gray-200 lg:bg-gray-100 duration-500">
                         <span className="sr-only">Search</span>
                         <SearchIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
                     <button className="mr-2 bg-white p-3 lg:p-3 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none  lg:rounded-md lg:hover:bg-gray-200 lg:bg-gray-100 duration-500">
                         <span className="sr-only">View notifications</span>
                         <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    </button> */}
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative">
@@ -91,7 +90,6 @@ const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken 
                                                 <Link
                                                     href={{
                                                         pathname: '/profile',
-                                                        query: { token: authToken }
                                                     }}>
                                                     <a
                                                         className={classNames(
@@ -115,7 +113,7 @@ const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken 
                                         <Menu.Item>
                                             {({ active }) => (
                                                 <Link
-                                                    href="#">
+                                                    href='/bookmarks'>
                                                     <a
                                                         className={classNames(
                                                             active ? 'bg-gray-100' : '',
@@ -136,11 +134,15 @@ const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken 
                                         <Menu.Item>
                                             {({ active }) => (
                                                 <Link
-                                                    href="#">
+                                                    href={{
+                                                        pathname: '/career_explorer/career_video/bookmark',
+                                                    }}
+
+                                                >
                                                     <a
                                                         className={classNames(
                                                             active ? 'bg-gray-100' : '',
-                                                            'block px-4 py-2 text-sm text-gray-700 flex'
+                                                            'block px-4 py-2 text-sm text-gray-700 flex hover:bg-gray-200'
                                                         )}
                                                     >
                                                         <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill="black">
@@ -154,7 +156,7 @@ const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken 
                                                 </Link>
                                             )}
                                         </Menu.Item>
-                                        <Menu.Item>
+                                        {/* <Menu.Item>
                                             {({ active }) => (
                                                 <Link
                                                     href="#">
@@ -174,13 +176,12 @@ const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken 
                                                     </a>
                                                 </Link>
                                             )}
-                                        </Menu.Item>
+                                        </Menu.Item> */}
                                         <Menu.Item>
                                             {({ active }) => (
                                                 <Link
                                                     href={{
                                                         pathname: '/aboutus',
-                                                        query: { token: authToken }
                                                     }}>
                                                     <a
                                                         className={classNames(
@@ -205,7 +206,7 @@ const HeaderLayout = ({ setSidebarOpen, profile, title, authToken, setAuthToken 
                                                 <a
                                                     href="#"
                                                     onClick={(e) => {
-                                                        setAuthToken('')
+                                                        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT'
                                                         router.push({
                                                             pathname: '/login',
                                                         })

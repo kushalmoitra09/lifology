@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     ThumbUpIcon,
     ThumbDownIcon,
@@ -9,45 +9,153 @@ import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
 import Constants from '/helpers/Constants.js'
-import useLocalStorage from '/helpers/useLocalStorage'
 import NavigationLayout from '/components/NavigationLayout'
 import HeaderLayout from '/components/HeaderLayout'
 import styles from '/styles/Magazine.module.css'
 import MetaLayout from '../../../components/MetaLayout'
 
 import "react-multi-carousel/lib/styles.css";
-import { SchemeGetRecommendedVideos, SchemeGetVideo } from '../../../helpers/GraphQLSchemes'
+import { SchemeGetRecommendedVideos, SchemeGetVideo, SchemeAddWatchLater, SchemeAddLike, SchemeAddDislike, SchemeVideoStatus, SchemeNoAction } from '../../../helpers/GraphQLSchemes'
+import { mutateGraph } from '../../../helpers/GraphQLCaller'
+import NextNProgress from 'nextjs-progressbar'
+import Breadcrumbs from '../../../components/Breadcrumbs'
+import { useRouter } from 'next/router'
 
-function getVideoId(url) {
-    var regExp = /https:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/
-    var match = url.match(regExp);
-    if (match) {
-        return match[2]
-    }
-    return ''
-}
+import cookies from 'next-cookies'
+
+// function getVideoId(url) {
+//     var regExp = /https:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/
+//     var match = url.match(regExp);
+//     if (match) {
+//         return match[2]
+//     }
+//     return ''
+// }
+
 export default function CareerVideoDetail({ profile, video, recommended, token }) {
+    const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
+    const [videoStatus, setVideoStatus] = useState([])
+
+    const pages = [
+        {
+            name: 'Career Explorer', href: '/career_explorer/', current: false
+        },
+        {
+            name: 'Career Videos', href: '/career_explorer/career_video', current: false
+        },
+        {
+            name: 'Career Videos Details', href: '#', current: true
+        },
+    ]
+
+    const client = new ApolloClient({
+        uri: Constants.baseUrl + "/api/career",
+        cache: new InMemoryCache(),
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+    const getVideoStatus = () => {
+        mutateGraph(client,
+            {
+                video_id: Number(video.id)
+            }, SchemeVideoStatus)
+            .then((res) => {
+                setVideoStatus(res.checkVideoStatus)
+
+            }).catch((networkErr) => {
+            });
+    }
+
+    useEffect(() => {
+        getVideoStatus();
+    }, [video.id])
 
 
+
+    const addToWatchLater = (id) => {
+
+        mutateGraph(client,
+            {
+                video_id: Number(id), bookmark_type: "WATCH_LATER"
+            }, SchemeAddWatchLater)
+            .then((res) => {
+                // setVideoStatus(res.checkVideoStatus);
+            }).catch((networkErr) => {
+
+            });
+        getVideoStatus();
+
+    }
+
+    const addToLike = (id) => {
+        if (videoStatus.like_status == 1) {
+            mutateGraph(client,
+                {
+                    video_id: Number(id)
+                }, SchemeNoAction)
+                .then((res) => {
+                }).catch((networkErr) => {
+                });
+        }
+        else {
+            mutateGraph(client,
+                {
+                    video_id: Number(id)
+                }, SchemeAddLike)
+                .then((res) => {
+                }).catch((networkErr) => {
+                });
+        }
+
+        getVideoStatus();
+    }
+
+    const addToDislike = (id) => {
+        if (videoStatus.like_status == 0) {
+
+            mutateGraph(client,
+                {
+                    video_id: Number(id)
+                }, SchemeNoAction)
+                .then((res) => {
+                }).catch((networkErr) => {
+                });
+        }
+        else {
+            mutateGraph(client,
+                {
+                    video_id: Number(id)
+                }, SchemeAddDislike)
+                .then((res) => {
+                }).catch((networkErr) => {
+                });
+        }
+
+        getVideoStatus();
+    }
+    const videoType = getVideoType(video.video)
     return (
         <>
 
             <MetaLayout title={video.title} description={video.description} />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="4" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Career Explorer / Career Videos / Career Videos Details" authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={video.title} />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
+
+                        <Breadcrumbs pages={pages} />
 
                         <div className="m-4">
 
                             <div className="max-w-6xl mx-auto mt-4">
                                 <div className="flex flex-col mt-2">
+
 
                                     <div className="max-w-3xl mx-auto grid grid-cols-1 gap-4 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
                                         <div className="space-y-6 lg:col-start-1 lg:col-span-2">
@@ -55,7 +163,11 @@ export default function CareerVideoDetail({ profile, video, recommended, token }
                                             <section aria-labelledby="applicant-information-title" >
                                                 <div className="bg-white shadow sm:rounded-lg p-4">
                                                     <div className="relative h-0" style={{ paddingBottom: '56.25%', paddingTop: '0px' }}>
-                                                        <iframe title="vimeo-player" src={"https://player.vimeo.com/video/" + getVideoId(video.video)} className="absolute rounded-lg top-0 left-0 w-full h-full" frameBorder="0" allowFullScreen>
+                                                        <iframe title="vimeo-player" src=
+                                                            {
+                                                                videoType == 'youtube' ? 'https://www.youtube.com/embed/' + getYoutubeVideoId(video.video) : videoType == 'vimeo' ?
+                                                                    "https://player.vimeo.com/video/" + getVimeoVideoId(video.video) : ''
+                                                            } className="absolute rounded-lg top-0 left-0 w-full h-full" frameBorder="0" allowFullScreen>
 
                                                         </iframe>
                                                     </div>
@@ -65,24 +177,31 @@ export default function CareerVideoDetail({ profile, video, recommended, token }
                                                             {video.title}
                                                         </div>
                                                         <div className="self-center flex ml-auto text-xs">
-                                                            <div className="flex">
-                                                                <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                                                </svg>
-                                                                Like
-                                                            </div>
-                                                            <div className="flex">
-                                                                <svg className="h-4 w-4 mr-2 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" />
-                                                                </svg>
-                                                                Dislike
-                                                            </div>
-                                                            <div className="flex">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                </svg>
-                                                                Watch Later
-                                                            </div>
+                                                            <a href="#" onClick={() => addToLike(video.id)}>
+                                                                <div className="flex">
+                                                                    <svg className="h-4 w-4 mr-2" fill={videoStatus.like_status == 1 ? "#1171ba" : "none"} viewBox="0 0 24 24" stroke="currentColor" >
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                                                    </svg>
+                                                                    Like
+                                                                </div>
+                                                            </a>
+                                                            <a href="#" onClick={() => addToDislike(video.id)}>
+                                                                <div className="flex">
+                                                                    <svg className="h-4 w-4 mr-2 ml-4" fill={videoStatus.like_status == 0 ? "#1171ba" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" />
+                                                                    </svg>
+                                                                    Dislike
+                                                                </div>
+                                                            </a>
+
+                                                            <a href="#" onClick={() => addToWatchLater(video.id)}>
+                                                                <div className="flex" >
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 ml-4" fill={videoStatus.bookmark_status == true ? "#1171ba" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                    </svg>
+                                                                    Watch Later
+                                                                </div>
+                                                            </a>
                                                         </div>
                                                     </div>
                                                     <div className="w-full h-px bg-gray-200 my-4"></div>
@@ -108,18 +227,15 @@ export default function CareerVideoDetail({ profile, video, recommended, token }
                                                 </h2>
                                                 {recommended.map((r) => (
                                                     <Link
-                                                        href={{
-                                                            pathname: '/career_explorer/career_video/' + r.id,
-                                                            query: { token: token }
-                                                        }}>
+                                                        href={'/career_explorer/career_video/' + r.id}>
                                                         <a>
                                                             <div className="flex my-4">
                                                                 <div className="mr-4 mt-2 flex-shrink-0 self-start">
-                                                                    <img className="w-20 rounded object-cover" src={r.thumbnail} />
+                                                                    <img className="w-20 h-12 rounded object-cover" src={r.thumbnail} />
                                                                 </div>
                                                                 <div className="self-center">
                                                                     <h4 className="text-sm font-bold">{r.title}</h4>
-                                                                    <p className="mt-1 text-xs">
+                                                                    <p className="mt-1 text-xs text-justify" >
                                                                         {r.description}
                                                                     </p>
                                                                 </div>
@@ -134,23 +250,40 @@ export default function CareerVideoDetail({ profile, video, recommended, token }
                             </div>
                         </div>
 
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
 
-            </div >
+            </div>
         </>
     )
 }
-// JobFamilies.getInitialProps = async (context) => {
-// const [authToken, setAuthToken] = useLocalStorage("authToken", "")
-// }
-
+function getVideoType($url) {
+    if ($url == null) {
+        return 'unknown'
+    } else if ($url.includes('youtu')) {
+        return 'youtube'
+    } else if ($url.includes('vimeo')) {
+        return 'vimeo'
+    } else {
+        return 'unknown'
+    }
+}
+function getVimeoVideoId(url) {
+    var regExp = /https:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/
+    var match = url.match(regExp);
+    if (match) {
+        return match[2]
+    }
+    return ''
+}
+function getYoutubeVideoId(url) {
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = url.match(regExp);
+    return (match && match[7].length == 11) ? match[7] : false;
+}
 export async function getServerSideProps(context) {
-    const { token } = context.query
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {
@@ -159,7 +292,6 @@ export async function getServerSideProps(context) {
             }
         }
     }
-
     const videoClient = new ApolloClient({
         uri: Constants.baseUrl + "/api/career",
         cache: new InMemoryCache(),
@@ -167,6 +299,7 @@ export async function getServerSideProps(context) {
             Authorization: "Bearer " + token,
         },
     })
+
     const video = await queryGraph(videoClient, { id: parseInt(context.params.id) }, SchemeGetVideo)
         .then((res) => {
             return res.videoDetails

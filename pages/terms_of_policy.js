@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
@@ -11,11 +11,11 @@ import MetaLayout from '../components/MetaLayout'
 import SettingNavigationLayout from '../components/SettingNavigationLayout'
 
 import "react-multi-carousel/lib/styles.css";
+import cookies from 'next-cookies'
 
-export default function TermsOfPolicy({ profile, token }) {
+export default function TermsOfPolicy({ profile }) {
     const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
     const index = 3;
     return (
@@ -23,10 +23,10 @@ export default function TermsOfPolicy({ profile, token }) {
             <MetaLayout title="Terms Of Policy" description="Terms Of Policy" />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Settings / Privacy Policy" authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Settings / Privacy Policy" />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
 
@@ -40,7 +40,7 @@ export default function TermsOfPolicy({ profile, token }) {
                                             {/* Description list*/}
                                             <section aria-labelledby="applicant-information-title" >
 
-                                                <SettingNavigationLayout index="3" authToken={token} />
+                                                <SettingNavigationLayout index="3" />
                                             </section>
 
                                         </div>
@@ -60,9 +60,6 @@ export default function TermsOfPolicy({ profile, token }) {
                             </div>
                         </div>
 
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
@@ -73,7 +70,7 @@ export default function TermsOfPolicy({ profile, token }) {
 }
 
 export async function getServerSideProps(context) {
-    const { token } = context.query;
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {

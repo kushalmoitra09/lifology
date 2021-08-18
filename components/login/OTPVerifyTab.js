@@ -8,6 +8,8 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
     const fourRef = useRef()
     const fiveRef = useRef()
     const sixRef = useRef()
+
+    const verifyRef = useRef()
     return (
         <div className="mt-6">
             <form onSubmit={verifyOTP} className="space-y-6">
@@ -17,11 +19,21 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
 
                             <input
                                 ref={oneRef}
+                                // onKeyPress={(event) => {
+                                //     if (!/[0-9]/.test(event.key)) {
+                                //         event.preventDefault();
+                                //     }
+                                // }}
                                 onKeyUp={(event) => {
                                     if (event.keyCode == 8) {
 
                                     } else {
-                                        twoRef.current.focus()
+                                        if (!/[0-9]/.test(event.key))
+                                            oneRef.current.value = ''
+                                        else
+                                            twoRef.current.focus()
+
+
                                     }
                                 }}
                                 onFocus={(event) => {
@@ -29,10 +41,11 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
                                 }}
                                 id="one"
                                 name="one"
-                                type="phone"
+                                type="tel"
                                 required
                                 className="w-10 h-10 text-center rounded-full bg-gray-100 px-3 py-2 text-sm w-full outline-none border focus:border-lblue duration-500"
                                 maxLength="1"
+                                pattern="[0-9]"
                             />
                             <input
                                 ref={twoRef}
@@ -40,7 +53,10 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
                                     if (event.keyCode == 8) {
                                         oneRef.current.focus()
                                     } else {
-                                        threeRef.current.focus()
+                                        if (!/[0-9]/.test(event.key))
+                                            twoRef.current.value = ''
+                                        else
+                                            threeRef.current.focus()
                                     }
                                 }}
                                 onFocus={(event) => {
@@ -59,7 +75,10 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
                                     if (event.keyCode == 8) {
                                         twoRef.current.focus()
                                     } else {
-                                        fourRef.current.focus()
+                                        if (!/[0-9]/.test(event.key))
+                                            threeRef.current.value = ''
+                                        else
+                                            fourRef.current.focus()
                                     }
                                 }}
                                 onFocus={(event) => {
@@ -78,7 +97,10 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
                                     if (event.keyCode == 8) {
                                         threeRef.current.focus()
                                     } else {
-                                        fiveRef.current.focus()
+                                        if (!/[0-9]/.test(event.key))
+                                            fourRef.current.value = ''
+                                        else
+                                            fiveRef.current.focus()
                                     }
                                 }}
                                 onFocus={(event) => {
@@ -97,7 +119,10 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
                                     if (event.keyCode == 8) {
                                         fourRef.current.focus()
                                     } else {
-                                        sixRef.current.focus()
+                                        if (!/[0-9]/.test(event.key))
+                                            fiveRef.current.value = ''
+                                        else
+                                            sixRef.current.focus()
                                     }
                                 }}
                                 onFocus={(event) => {
@@ -116,6 +141,10 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
                                     if (event.keyCode == 8) {
                                         fiveRef.current.focus()
                                     } else {
+                                        if (!/[0-9]/.test(event.key))
+                                            sixRef.current.value = ''
+                                        else
+                                            verifyRef.current.click()
                                         // sixRef.current.focus()
                                     }
                                 }}
@@ -135,11 +164,11 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
 
                 <div className="mt-4">
                     <div className="mt-1 grid grid-cols-2 gap-2">
-                        <div>
+                        {timeLeft != 0 && <div>
                             00:{timeLeft.toString().length == 1 ? '0' + timeLeft : timeLeft} seconds
-                        </div>
+                        </div>}
 
-                        <div className="text-right">
+                        <div className="">
                             {
                                 timeLeft == 0 ?
                                     <a
@@ -155,6 +184,7 @@ const OTPVerifyTab = ({ verifyOTP, resendOTP, timeLeft, selectTab }) => {
                 </div>
                 <div>
                     <button
+                        ref={verifyRef}
                         type="submit"
                         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-lblue hover:bg-lblue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 

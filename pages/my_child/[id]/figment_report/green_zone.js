@@ -16,6 +16,7 @@ import { Listbox, Transition, Dialog } from '@headlessui/react'
 
 import "react-multi-carousel/lib/styles.css";
 
+import classNames from '/helpers/classNames'
 
 
 export default function GreenZone({ profile, token }) {
@@ -29,7 +30,8 @@ export default function GreenZone({ profile, token }) {
     const [openOrange, setOrangeOpen] = useState(false)
     const [openPurple, setPurpleOpen] = useState(false)
 
-    const index = 4;
+    const [index, setIndex] = useState(1)
+
     return (
         <>
             <MetaLayout title="Purple Zone" description="Purple Zone" />
@@ -67,92 +69,114 @@ export default function GreenZone({ profile, token }) {
 
                                                 <div className="bg-white rounded-md shadow mt-4 p-4">
 
-                                                    <div className="relative w-full border rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default outline-none focus:outline-none focus:border-indigo-700 sm:text-sm border border-gray-300 " style={{ background: '#5EB570' }}>
-                                                        <span className="font-medium block truncate text-white">Green Zone</span>
-                                                        <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
-                                                            <a onClick={(event) => setGreenOpen(!openGreen)}>
-                                                                <div className="p-1 bg-white rounded-full">
-                                                                    {
-                                                                        openGreen ?
+                                                    <a onClick={
+                                                        (event) => setIndex(1)
+                                                    }>
+                                                        <div className={
+                                                            classNames("group relative w-full rounded-md shadow pl-3 pr-10 py-2 text-left cursor-pointer outline-none focus:outline-none sm:text-sm hover:shadow-lg duration-500 hover:bg-lgreen",
+                                                                index == 1 ? 'bg-lgreen' : '')
+                                                        }>
+                                                            <span className={
+                                                                classNames("font-medium block truncate group-hover:text-white duration-500",
+                                                                    index == 1 ? 'text-white' : '')
+                                                            }>Green Zone</span>
+                                                            <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
+                                                                <div className={
+                                                                    classNames("p-1 rounded-full  duration-500", index == 1 ? 'bg-white text-lgreen' : 'bg-black text-white group-hover:bg-white group-hover:text-lgreen')
+                                                                }>
+                                                                    <svg className={
+                                                                        classNames("h-4 w-4", index == 1 ? 'rotate-90' : '')
+                                                                    } fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                                    </svg>
 
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="#5EB570">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                                            </svg> :
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="#5EB570">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                                                            </svg>
-                                                                    }
                                                                 </div>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    {openGreen && <div className="border mb-4 p-2 w-auto items-center font-medium text-sm block truncate">Green Zone Data</div>}
+                                                            </span>
+                                                        </div>
+                                                    </a>
 
 
+                                                    <a onClick={
+                                                        (event) => setIndex(2)
+                                                    }>
+                                                        <div className={
+                                                            classNames("group relative w-full rounded-md shadow pl-3 pr-10 py-2  mt-4 text-left cursor-pointer outline-none focus:outline-none sm:text-sm hover:shadow-lg duration-500 hover:bg-lgreen",
+                                                                index == 2 ? 'bg-lgreen' : '')
+                                                        }>
+                                                            <span className={
+                                                                classNames("font-medium block truncate group-hover:text-white duration-500",
+                                                                    index == 2 ? 'text-white' : '')
+                                                            }>Blue Zone</span>
+                                                            <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
+                                                                <div className={
+                                                                    classNames("p-1 rounded-full  duration-500", index == 2 ? 'bg-white text-lgreen' : 'bg-black text-white group-hover:bg-white group-hover:text-lgreen')
+                                                                }>
+                                                                    <svg className={
+                                                                        classNames("h-4 w-4", index == 2 ? 'rotate-90' : '')
+                                                                    } fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                                    </svg>
 
-                                                    <div className="relative w-full border rounded-md shadow-sm pl-3 pr-10 py-2 mt-4 text-left cursor-default outline-none focus:outline-none focus:border-indigo-700 sm:text-sm border border-gray-300 " >
-                                                        <span className="font-medium block truncate">Blue Zone</span>
-                                                        <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
-                                                            <a onClick={(event) => setBlueOpen(!openBlue)}>
-                                                                <div className="p-1 bg-black  rounded-full">
-                                                                    {
-                                                                        openBlue ?
-
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                                            </svg> :
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                                                            </svg>
-                                                                    }
                                                                 </div>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    {openBlue && <div className="border mb-4 p-2 w-auto items-center font-medium text-sm block truncate">Blue Zone Data</div>}
+                                                            </span>
+                                                        </div>
+                                                    </a>
 
-                                                    <div className="relative w-full border rounded-md shadow-sm pl-3 pr-10 py-2 mt-4 text-left cursor-default outline-none focus:outline-none focus:border-indigo-700 sm:text-sm border border-gray-300 " >
-                                                        <span className="font-medium block truncate">Orange Zone</span>
-                                                        <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
-                                                            <a onClick={(event) => setOrangeOpen(!openOrange)}>
-                                                                <div className="p-1 bg-black  rounded-full">
-                                                                    {
-                                                                        openOrange ?
+                                                    <a onClick={
+                                                        (event) => setIndex(3)
+                                                    }>
+                                                        <div className={
+                                                            classNames("group relative w-full rounded-md shadow pl-3 pr-10 py-2  mt-4 text-left cursor-pointer outline-none focus:outline-none sm:text-sm hover:shadow-lg duration-500 hover:bg-lgreen",
+                                                                index == 3 ? 'bg-lgreen' : '')
+                                                        }>
+                                                            <span className={
+                                                                classNames("font-medium block truncate group-hover:text-white duration-500",
+                                                                    index == 3 ? 'text-white' : '')
+                                                            }>Orange Zone</span>
+                                                            <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
+                                                                <a href="orange_zone">
+                                                                    <div className={
+                                                                        classNames("p-1 rounded-full  duration-500", index == 3 ? 'bg-white text-lgreen' : 'bg-black text-white group-hover:bg-white group-hover:text-lgreen')
+                                                                    }>
+                                                                        <svg className={
+                                                                            classNames("h-4 w-4", index == 3 ? 'rotate-90' : '')
+                                                                        } fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                                        </svg>
 
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                                            </svg> :
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                                                            </svg>
-                                                                    }
-                                                                </div>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    {openOrange && <div className="border mb-4 p-2 w-auto items-center font-medium text-sm block truncate">Orange Zone Data</div>}
+                                                                    </div>
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                    </a>
 
+                                                    <a onClick={
+                                                        (event) => setIndex(4)
+                                                    }>
+                                                        <div className={
+                                                            classNames("group relative w-full rounded-md shadow pl-3 pr-10 py-2  mt-4 text-left cursor-pointer outline-none focus:outline-none sm:text-sm hover:shadow-lg duration-500 hover:bg-lgreen",
+                                                                index == 4 ? 'bg-lgreen' : '')
+                                                        }>
+                                                            <span className={
+                                                                classNames("font-medium block truncate group-hover:text-white duration-500",
+                                                                    index == 4 ? 'text-white' : '')
+                                                            }>Purple Zone</span>
+                                                            <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
+                                                                <a href="purple_zone">
+                                                                    <div className={
+                                                                        classNames("p-1 rounded-full  duration-500", index == 4 ? 'bg-white text-lgreen' : 'bg-black text-white group-hover:bg-white group-hover:text-lgreen')
+                                                                    }>
+                                                                        <svg className={
+                                                                            classNames("h-4 w-4", index == 4 ? 'rotate-90' : '')
+                                                                        } fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                                        </svg>
 
-                                                    <div className="relative w-full border rounded-md shadow-sm pl-3 pr-10 py-2 mt-4 text-left cursor-default outline-none focus:outline-none focus:border-indigo-700 sm:text-sm border border-gray-300 " >
-                                                        <span className="font-medium block truncate">Purple Zone</span>
-                                                        <span className="absolute inset-y-0 right-0 flex items-center pl-2 pr-2 ">
-                                                            <a onClick={(event) => setPurpleOpen(!openPurple)}>
-                                                                <div className="p-1 bg-black  rounded-full">
-                                                                    {
-                                                                        openPurple ?
-
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                                            </svg> :
-                                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                                                            </svg>
-                                                                    }
-                                                                </div>
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    {openPurple && <div className="border p-2 w-auto items-center font-medium text-sm block truncate">Purple Zone Data</div>}
+                                                                    </div>
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                    </a>
 
 
                                                 </div>

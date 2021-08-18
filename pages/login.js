@@ -13,27 +13,35 @@ import DownloadLayout from '../components/DownloadLayout'
 import useLocalStorage from '../helpers/useLocalStorage'
 import MetaLayout from '../components/MetaLayout'
 import LoadingDialog from '../components/dialog/LoadingDialog'
+import NextNprogress from 'nextjs-progressbar';
 
 const client = new ApolloClient({
     uri: Constants.baseUrl + "/api/auth",
     cache: new InMemoryCache(),
 });
 
-export default function Login() {
+export default function Login({ cs }) {
     const router = useRouter()
     const [loadingDialog, setLoadingDialog] = useState(false)
     const [successDialog, setSuccessDialog] = useState(false)
+    const [successDialogString, setSuccessDialogString] = useState('Login Successful')
     const [errorDialog, setErrorDialog] = useState(false)
+    const [errorDialogString, setErrorDialogString] = useState('Login Failed')
     const [signupDialog, setSignupDialog] = useState(false)
     const [error, setError] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [tab, setTab] = useState(1)
 
     const [authToken, setAuthToken] = useLocalStorage("authToken", "");
+
     const [mobile, setMobile] = useLocalStorage("mobile", "");
 
     const [timeLeft, setTimeLeft] = useState(0);
 
+    const [selectedCountry, setSelectedCountry] = useState(cs[104])
+    useEffect(() => {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+    }, [])
     useEffect(() => {
         setTimeout(() => {
             if (tab == 1) {
@@ -59,7 +67,7 @@ export default function Login() {
                 if (res.sendOtp) {
                     setLoadingDialog(false)
                     setTab(2)
-                    setTimeLeft(30)
+                    setTimeLeft(15)
                 }
             }).catch((networkErr) => {
                 setLoadingDialog(false)
@@ -75,7 +83,9 @@ export default function Login() {
                 if (res.sendOtp) {
                     setLoadingDialog(false)
                     // setTab(2)
-                    setTimeLeft(30)
+                    setTimeLeft(15)
+                    setSuccessDialogString('OTP Sent Successful')
+                    setSuccessDialog(true)
                 }
             }).catch((networkErr) => {
                 setLoadingDialog(false)
@@ -95,13 +105,13 @@ export default function Login() {
                 console.log(res.otpVerification)
                 setLoadingDialog(false)
                 if (res.otpVerification.is_user_exist) {
+                    setSuccessDialogString('Login Successful')
                     setSuccessDialog(true)
                     setTimeout(() => {
-
                         setSuccessDialog(false)
+                        document.cookie = 'token=' + res.otpVerification.auth_token + ';expires=3600;'
                         router.push({
                             pathname: 'career_explorer',
-                            query: { token: res.otpVerification.auth_token }
                         })
                     }, 1000)
                     setAuthToken(res.otpVerification.auth_token);
@@ -111,7 +121,8 @@ export default function Login() {
             }).catch((networkErr) => {
                 setLoadingDialog(false)
                 setErrorDialog(true)
-                console.log(networkErr);
+                setErrorDialogString(networkErr)
+                console.log(networkErr)
             });
     }
 
@@ -144,9 +155,9 @@ export default function Login() {
 
                     <div className="mx-auto w-full max-w-sm lg:w-96">
                         <div>
-                            <h2 className="mt-6 text-xl font-extrabold text-gray-900 text-align-center text-center">{tab === 1 ? 'Welcome to Lifology' : 'Enter Code Sent To On Your Mobile Number'}</h2>
-                            <p className="mt-2 text-sm text-gray-600 text-center">
-                                {tab === 1 ? <span>The World's leading career guidance platform</span> : <span>We sent it to the number +91 {phoneNumber}</span>}
+                            <h2 className="mt-6 text-xl font-extrabold text-gray-900 text-align-center text-center">{tab === 1 ? 'Let’s get started' : 'Verify Your Mobile Number'}</h2>
+                            <p className="mt-2 text-xs text-gray-600 text-center">
+                                {tab === 1 ? <span>The World's leading career guidance platform</span> : timeLeft == 0 ? <span></span> : <span>We have sent a 6-digit OTP to +91 {phoneNumber}. Enter it below.</span>}
                             </p>
                         </div>
 
@@ -155,7 +166,7 @@ export default function Login() {
                                 tab === 1 ?
                                     <PhoneNumberTab submit={sendOTP} error={error} setError={(error) => {
                                         setError(error)
-                                    }} /> :
+                                    }} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} countries={cs} /> :
                                     <OTPVerifyTab verifyOTP={verifyOTP} resendOTP={resendOTP} timeLeft={timeLeft} selectTab={
                                         () => {
                                             setTimeLeft(0)
@@ -164,52 +175,7 @@ export default function Login() {
 
                             }
 
-                            <div>
-                                <div className="mt-6 relative">
-                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="w-full border-t border-gray-300" />
-                                    </div>
-                                    <div className="relative flex justify-center text-sm">
-                                        <span className="px-2 bg-white text-gray-500">Or Login with</span>
-                                    </div>
-                                </div>
-                                <div className="mt-0">
-                                    <div className="mt-4 grid grid-cols-2 gap-2">
-                                        <div>
-                                            <a
-                                                href="#"
-                                                className="w-full rounded-full border border-gray-200 bg-gray-100 inline-flex px-4 py-2 justify-center text-gray-400 hover:border-indigo-700 hover:bg-lblue hover:text-white duration-500"
-                                            // className={styles.socialMediaButton}
-                                            >
-                                                <span className="sr-only">Sign in with Facebook</span>
-                                                <svg className="w-4 h-4 self-center" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                                <p className="ml-4" >Facebook</p>
-                                            </a>
-                                        </div>
 
-                                        <div>
-                                            <a
-                                                href="#"
-                                                className="w-full rounded-full border border-gray-200 bg-gray-100 inline-flex px-4 py-2 justify-center text-gray-400 hover:border-indigo-700 hover:bg-lblue hover:text-white duration-500"
-                                            >
-                                                <span className="sr-only">Sign in with Twitter</span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 640 640" className="self-center w-4 h-4" >
-                                                    <path d="M326.331 274.255v109.761h181.49c-7.37 47.115-54.886 138.002-181.49 138.002-109.242 0-198.369-90.485-198.369-202.006 0-111.509 89.127-201.995 198.369-201.995 62.127 0 103.761 26.516 127.525 49.359l86.883-83.635C484.99 31.512 412.741-.012 326.378-.012 149.494-.012 6.366 143.116 6.366 320c0 176.884 143.128 320.012 320.012 320.012 184.644 0 307.256-129.876 307.256-312.653 0-21-2.244-36.993-5.008-52.997l-302.248-.13-.047.024z" />
-                                                </svg>
-                                                <p className="ml-4" >Google</p>
-                                            </a>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div>
                         </div>
                     </div>
 
@@ -255,7 +221,7 @@ export default function Login() {
                                     </div>
                                     <div className="mt-3 text-center sm:mt-5">
                                         <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                                            Login successful
+                                            {successDialogString}
                                         </Dialog.Title>
                                         <button className="absolute h-0 w-0 overflow-hidden" />
                                     </div>
@@ -301,7 +267,7 @@ export default function Login() {
                                     </div>
                                     <div className="mt-3 text-center sm:mt-5">
                                         <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                                            Login Failed
+                                            {errorDialogString}
                                         </Dialog.Title>
                                     </div>
                                 </div>
@@ -407,4 +373,12 @@ export default function Login() {
 
         </>
     )
+}
+export async function getServerSideProps(context) {
+    const cs = await fetch('https://restcountries.eu/rest/v2/all')
+        .then(response => response.json())
+        .then(data => (data));
+    return {
+        props: { cs }
+    }
 }

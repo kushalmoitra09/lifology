@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
@@ -10,28 +10,43 @@ import HeaderLayout from '/components/HeaderLayout'
 import MetaLayout from '/components/MetaLayout'
 import "react-multi-carousel/lib/styles.css";
 import { SchemeCareerPools } from '/helpers/GraphQLSchemes'
-import VideoDialog from '../../../../components/dialog/VideoDialog'
 import { SchemeCareerFields } from '../../../../helpers/GraphQLSchemes'
+import Breadcrumbs from '../../../../components/Breadcrumbs'
+import { useRouter } from 'next/router'
+import cookies from 'next-cookies'
+import YoutubeDialog from '../../../../components/dialog/YoutubeDialog'
 
-
-export default function JobFamily({ profile, jobFamily, careerFields, token }) {
+export default function JobFamily({ profile, jobFamily, careerFields }) {
+    const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
     const [openVideo, setOpenVideo] = useState(false)
 
+    const pages = [
+        {
+            name: 'Career Explorer', href: '/career_explorer/', current: false
+        },
+        {
+            name: 'Job Families & Career Fields', href: '/career_explorer/job_families', current: false
+        },
+        {
+            name: jobFamily.name, href: '#', current: true
+        },
+    ]
     return (
         <>
             <MetaLayout title={jobFamily.name} description={jobFamily.description} />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="4" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={"Career Explorer / Course & University / " + jobFamily.name} authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={jobFamily.name} />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
 
+
+                        <Breadcrumbs pages={pages} />
                         <div className="m-4">
 
                             <div className="max-w-6xl mx-auto mt-4">
@@ -46,7 +61,7 @@ export default function JobFamily({ profile, jobFamily, careerFields, token }) {
                                                     </div>
                                                     <div className="w-full self-center text-left">
                                                         <div className="font-bold text-xl mt-12" >{jobFamily.name}</div>
-                                                        <div className="mt-2 text-sm text-justify" >{jobFamily.one_liner}</div>
+                                                        {/* <div className="mt-2 text-sm text-justify" >{jobFamily.one_liner}</div> */}
                                                     </div>
                                                 </div>
 
@@ -61,14 +76,11 @@ export default function JobFamily({ profile, jobFamily, careerFields, token }) {
                                                     Career Fields
                                                 </h2>
                                                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4 lg:grid-cols-4">
-                                                    {careerFields.map((cf) => (
+                                                    {careerFields.map((cf, index) => (
                                                         <Link
-                                                            href={{
-                                                                pathname: '/career_explorer/job_families/' + jobFamily.id + '/career_field/' + cf.id,
-                                                                query: { token: token }
-                                                            }}>
+                                                            href={'/career_explorer/job_families/' + jobFamily.id + '/career_field/' + cf.id}>
                                                             <a>
-                                                                <div className="group relative rounded shadow p-4 hover:shadow-xl active:shadow-sm duration-500 h-40" style={{ background: getColor() }}>
+                                                                <div className="group relative rounded shadow p-4 hover:shadow-xl active:shadow-sm duration-500 h-40" style={{ background: getColor(index) }}>
                                                                     <img src="/img/logoWhite.png" className="absolute h-5 w-5 right-4 " />
                                                                     <div className="text-white text-opacity-20 text-7xl font-bold select-none group-hover:text-opacity-100 duration-500">{cf.name.charAt(0)}</div>
                                                                     <div className="absolute bottom-4 mr-12">
@@ -91,7 +103,7 @@ export default function JobFamily({ profile, jobFamily, careerFields, token }) {
 
                                             <div className=" bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
                                                 <h2 id="timeline-title" className="text-lg font-medium text-gray-900">
-                                                    University Video
+                                                    Career Video
                                                 </h2>
                                                 <a href="#" onClick={(event) => { setOpenVideo(true) }}>
                                                     <div className="group relative shadow hover:shadow-xl hover:scale-105 active:scale-100 duration-500">
@@ -127,19 +139,19 @@ export default function JobFamily({ profile, jobFamily, careerFields, token }) {
                                                 </div>
                                                 <div className="flex mt-4 text-sm font-medium text-gray-900">
                                                     <div className="w-2/4">Personality Match</div>
-                                                    <div className="w-2/4 text-right">{jobFamily.personality_match}%</div>
+                                                    <div className="w-2/4 text-right">{jobFamily.personality_match >= 0 ? jobFamily.personality_match : 0}%</div>
                                                 </div>
                                                 <div className="mt-2 h-2 w-full rounded-full" style={{ background: '#F3F3F3' }}>
-                                                    <div className="h-2 rounded-full bg-lblue" style={{ width: jobFamily.personality_match + '%' }}>
+                                                    <div className="h-2 rounded-full bg-lblue" style={{ width: jobFamily.personality_match >= 0 ? jobFamily.personality_match : 0 + '%' }}>
 
                                                     </div>
                                                 </div>
                                                 <div className="flex mt-4 text-sm font-medium text-gray-900">
                                                     <div className="w-2/4">Orientation Match</div>
-                                                    <div className="w-2/4 text-right">{jobFamily.orientation_match}%</div>
+                                                    <div className="w-2/4 text-right">{jobFamily.orientation_match >= 0 ? jobFamily.orientation_match : 0}%</div>
                                                 </div>
                                                 <div className="mt-2 h-2 w-full rounded-full" style={{ background: '#F3F3F3' }}>
-                                                    <div className="h-2 rounded-full bg-lyellow" style={{ width: jobFamily.orientation_match + '%' }}>
+                                                    <div className="h-2 rounded-full bg-lyellow" style={{ width: jobFamily.orientation_match >= 0 ? jobFamily.orientation_match : 0 + '%' }}>
 
                                                     </div>
                                                 </div>
@@ -149,26 +161,26 @@ export default function JobFamily({ profile, jobFamily, careerFields, token }) {
                                 </div>
                             </div>
                         </div>
-
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
             </div >
 
-            <VideoDialog showDialog={openVideo} setShowDialog={setOpenVideo} url={jobFamily.video} />
+            <YoutubeDialog showDialog={openVideo} setShowDialog={setOpenVideo} url={jobFamily.video} />
         </>
     )
 }
 
-const getColor = () => {
-    const randomColor = Math.floor(Math.random() * 16777215).toString(16)
-    return "#" + randomColor
-}
+// const getColor = () => {
+//     const randomColor = Math.floor(Math.random() * 16777215).toString(16)
+//     return "#" + randomColor
+// }
+const colors = ['#F15223', '#9366FF', '#6ED96E', '#FFC400', '#FF7A66', '#66BDFF', '#02C77D', '#FFC107']
 
+const getColor = (index) => {
+    return colors[index % 8]
+}
 export async function getServerSideProps(context) {
-    const { token } = context.query
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {
@@ -211,7 +223,7 @@ export async function getServerSideProps(context) {
             return {};
         });
     return {
-        props: { profile, jobFamily, careerFields, token }
+        props: { profile, jobFamily, careerFields }
     }
 }
 

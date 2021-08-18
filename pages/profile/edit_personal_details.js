@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Dialog, Transition } from '@headlessui/react'
 import { mutateGraph, queryGraph } from '../../helpers/GraphQLCaller'
@@ -12,12 +12,11 @@ import HeaderLayout from '../../components/HeaderLayout'
 import ProgressBar from '../../components/ProgressBar'
 import { Fragment } from 'react'
 import MetaLayout from '../../components/MetaLayout'
-
+import cookies from 'next-cookies'
 export default function EditPersonalDetails({ profile, token }) {
     const router = useRouter()
     const [loadingDialog, setLoadingDialog] = useState(false)
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
     const submit = async (event) => {
         event.preventDefault()
@@ -30,7 +29,7 @@ export default function EditPersonalDetails({ profile, token }) {
                 method: 'POST',
                 body: formData,
                 headers: new Headers({
-                    'Authorization': 'Bearer ' + authToken,
+                    'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json'
                 })
             }).then(function (res) {
@@ -58,7 +57,7 @@ export default function EditPersonalDetails({ profile, token }) {
             uri: Constants.baseUrl + "/api/user",
             cache: new InMemoryCache(),
             headers: {
-                Authorization: "Bearer " + authToken,
+                Authorization: "Bearer " + token,
             },
         });
         await mutateGraph(client,
@@ -88,11 +87,11 @@ export default function EditPersonalDetails({ profile, token }) {
             <MetaLayout title="Profile" description="Profile" />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
 
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Profile / Edit Profile" authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Profile / Edit Profile" />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
 
@@ -203,9 +202,6 @@ export default function EditPersonalDetails({ profile, token }) {
                             </div>
                         </div>
 
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center font-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
@@ -263,7 +259,7 @@ export default function EditPersonalDetails({ profile, token }) {
 }
 
 export async function getServerSideProps(context) {
-    const { token } = context.query
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {

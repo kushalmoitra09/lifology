@@ -19,7 +19,7 @@ export const mutateGraph = function (apolloClient, vars, scheme) {
       })
       .catch((err) => {
         clearTimeout(timeoutCallMutate);
-        reject(err.networkError.result.errors[0].message);
+        reject(err);
       });
   });
 };
@@ -41,8 +41,12 @@ export const queryGraph = function (apolloClient, vars = {}, scheme, fetch_Polic
         resolve(res.data);
       })
       .catch((err) => {
+        console.log("ERROR", err)
         clearTimeout(timeoutCall);
-        // reject(err.networkError.result.errors[0].message);
+        if (err.networkError != null && err.networkError.result != null && err.networkError.result.errors != null)
+          reject(err.networkError.result.errors[0].message);
+        else
+          reject('Error')
       });
   });
 };

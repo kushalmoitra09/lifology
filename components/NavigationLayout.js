@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
-import useLocalStorage from '../helpers/useLocalStorage'
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import {
@@ -12,7 +11,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => {
+const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen , isPackagePurhased }) => {
     const router = useRouter()
     return (
         <>
@@ -77,7 +76,7 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                             >
                                 <div className="px-2 space-y-1">
                                     <Link
-                                        href="#">
+                                        href="/">
                                         <a
                                             className={classNames(
                                                 index == 1 ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:text-white hover:bg-cyan-600',
@@ -98,7 +97,6 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                     <Link
                                         href={{
                                             pathname: '/my_child',
-                                            query: { token: authToken }
                                         }}>
                                         <a
                                             className={classNames(
@@ -117,8 +115,8 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                             My Child
                                         </a>
                                     </Link>
-                                    <Link
-                                        href="#">
+                                    {/* <Link
+                                        href="/services">
                                         <a
                                             className={classNames(
                                                 index == 3 ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:text-white hover:bg-cyan-600',
@@ -135,11 +133,10 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                             </svg>
                                             Services
                                         </a>
-                                    </Link>
+                                    </Link> */}
                                     <Link
                                         href={{
                                             pathname: '/career_explorer',
-                                            query: { token: authToken }
                                         }}>
                                         <a
                                             className={classNames(
@@ -158,7 +155,7 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                             Career Explorer
                                         </a>
                                     </Link>
-                                    <Link
+                                    {/* <Link
                                         href="#">
                                         <a
                                             href="#"
@@ -176,6 +173,25 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                                 </g>
                                             </svg>
                                             Lifology Hub
+                                        </a>
+                                    </Link> */}
+                                    <Link
+                                        href="/coaching">
+                                        <a
+                                            className={classNames(
+                                                index == 6 ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:text-white hover:bg-cyan-600',
+                                                'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                                            )}
+                                            aria-current={index == 6 ? 'page' : undefined}
+                                        >
+
+                                            <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 6 ? 'white' : 'black'}>
+                                                <g>
+                                                    <path fill="none" d="M0 0h24v24H0z" />
+                                                    <path d="M5.636 12.707l1.828 1.829L8.88 13.12 7.05 11.293l1.414-1.414 1.829 1.828 1.414-1.414L9.88 8.464l1.414-1.414L13.12 8.88l1.415-1.415-1.829-1.828 2.829-2.828a1 1 0 0 1 1.414 0l4.242 4.242a1 1 0 0 1 0 1.414L8.464 21.192a1 1 0 0 1-1.414 0L2.808 16.95a1 1 0 0 1 0-1.414l2.828-2.829zm8.485 5.656l4.243-4.242L21 16.757V21h-4.242l-2.637-2.637zM5.636 9.878L2.807 7.05a1 1 0 0 1 0-1.415l2.829-2.828a1 1 0 0 1 1.414 0L9.88 5.635 5.636 9.878z" />
+                                                </g>
+                                            </svg>
+                                            Coaching
                                         </a>
                                     </Link>
                                 </div>
@@ -202,9 +218,9 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                         </div>
                         <nav className="mt-5 flex-1 flex flex-col divide-y divide-cyan-800 overflow-y-auto relative" aria-label="Sidebar">
                             <div className="px-4 space-y-1 mt-4">
-
+                                
                                 <Link
-                                    href="#">
+                                    href="/">
                                     <a
                                         className={classNames(
                                             index == 1 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
@@ -223,7 +239,6 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                 <Link
                                     href={{
                                         pathname: '/my_child',
-                                        query: { token: authToken }
                                     }}>
                                     <a
                                         className={classNames(
@@ -240,8 +255,8 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                         My Child
                                     </a>
                                 </Link>
-                                <Link
-                                    href="#">
+                                {/* <Link
+                                    href="/services">
                                     <a
                                         className={classNames(
                                             index == 3 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
@@ -256,11 +271,10 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                         </svg>
                                         Services
                                     </a>
-                                </Link>
+                                </Link> */}
                                 <Link
                                     href={{
                                         pathname: '/career_explorer',
-                                        query: { token: authToken }
                                     }}>
                                     <a
                                         className={classNames(
@@ -277,7 +291,7 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                         Career Explorer
                                     </a>
                                 </Link>
-                                <Link
+                                {/* <Link
                                     href="#">
                                     <a
                                         className={classNames(
@@ -293,17 +307,34 @@ const NavigationLayout = ({ index, sidebarOpen, setSidebarOpen, authToken }) => 
                                         </svg>
                                         Lifology Hub
                                     </a>
+                                </Link> */}
+                                <Link
+                                    href="/coaching">
+                                    <a
+                                        className={classNames(
+                                            index == 6 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100',
+                                            "font-medium text-sm p-2 rounded-md items-center flex duration-500"
+                                        )}
+                                    >
+                                        <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 6 ? 'white' : 'black'}>
+                                            <g>
+                                                <path fill="none" d="M0 0h24v24H0z" />
+                                                <path d="M5.636 12.707l1.828 1.829L8.88 13.12 7.05 11.293l1.414-1.414 1.829 1.828 1.414-1.414L9.88 8.464l1.414-1.414L13.12 8.88l1.415-1.415-1.829-1.828 2.829-2.828a1 1 0 0 1 1.414 0l4.242 4.242a1 1 0 0 1 0 1.414L8.464 21.192a1 1 0 0 1-1.414 0L2.808 16.95a1 1 0 0 1 0-1.414l2.828-2.829zm8.485 5.656l4.243-4.242L21 16.757V21h-4.242l-2.637-2.637zM5.636 9.878L2.807 7.05a1 1 0 0 1 0-1.415l2.829-2.828a1 1 0 0 1 1.414 0L9.88 5.635 5.636 9.878z" />
+                                            </g>
+                                        </svg>
+                                        Coaching
+                                    </a>
                                 </Link>
                             </div>
                             <div className="absolute mt-6 pt-6 bottom-0 border-0">
                                 <div className="px-2 space-y-1 text-center">
                                     <span className="px-2 bg-white text-center text-gray-900 font-bold">Download Our App</span>
-                                    <a href="#" >
+                                    <a target="_blank" href="https://play.google.com/store/apps/details?id=com.app.lifology" >
                                         <img className="mt-4 ml-auto mr-auto w-3/5" src="/img/play-store.png" />
                                     </a>
-                                    <a href="#">
+                                    {/* <a href="#">
                                         <img className="mt-4 ml-auto mr-auto w-3/5" src="/img/app-store.png" />
-                                    </a>
+                                    </a> */}
                                 </div>
                             </div>
                         </nav>

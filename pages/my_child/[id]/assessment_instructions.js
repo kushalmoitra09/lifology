@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
@@ -14,26 +14,36 @@ import VideoDialog from '/components/dialog/VideoDialog'
 import { SchemeCareerFields } from '/helpers/GraphQLSchemes'
 import styles from '/styles/Mti.module.css'
 import { SchemeGetAssessment } from '../../../helpers/GraphQLSchemes'
+import Breadcrumbs from '../../../components/Breadcrumbs'
+import { useRouter } from 'next/router'
+import cookies from 'next-cookies'
 
-
-export default function MTIAssessment({ profile, assessment, token }) {
+export default function MTIAssessment({ profile, assessment }) {
+    const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
     const [openVideo, setOpenVideo] = useState(false)
 
+    const pages = [
+        {
+            name: 'My Child', href: '/my_child/', current: false
+        },
+        {
+            name: 'Instructions', href: '#', current: true
+        },
+    ]
     return (
         <>
-            <MetaLayout title="Assesment / MTI Assesment" description="Assesment / {assessment.title} Assesment" />
+            <MetaLayout title="Assesment / MTI Assesment" description={"Assesment / " + assessment.title + " Assesment"} />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={"My Child / Instructions "} authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={"Instructions"} />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
-
+                        <Breadcrumbs pages={pages} />
                         <div className="m-4">
 
                             <div className="max-w-6xl mx-auto mt-4">
@@ -65,14 +75,9 @@ export default function MTIAssessment({ profile, assessment, token }) {
                                                     </li>
                                                     <li className="text-sm">Remember there are no right or wrong answer. these are just your Prefrences to the given statement</li>
                                                 </ul>
-                                                <br></br><br></br><br></br>
-                                                <div className="text-container" dangerouslySetInnerHTML={{ __html: assessment.instruction }} />
 
                                                 <Link
-                                                    href={{
-                                                        pathname: "/my_child/" + assessment.id + "/assessment",
-                                                        query: { token: token }
-                                                    }}>
+                                                    href={"/my_child/" + assessment.id + "/assessment"}>
                                                     <a
                                                         className="w-max mt-4 ml-auto flex justify-center py-2 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-lblue hover:bg-indigo-700 focus:outline-none">
                                                         Start Assesment
@@ -114,9 +119,6 @@ export default function MTIAssessment({ profile, assessment, token }) {
                             </div>
                         </div>
 
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
             </div >
@@ -132,7 +134,7 @@ const getColor = () => {
 }
 
 export async function getServerSideProps(context) {
-    const { token } = context.query
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {

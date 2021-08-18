@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 import { Dialog, Transition } from '@headlessui/react'
@@ -13,34 +13,35 @@ import HeaderLayout from '/components/HeaderLayout'
 import ProgressBar from '/components/ProgressBar'
 import { Fragment } from 'react'
 import MetaLayout from '/components/MetaLayout'
+import cookies from 'next-cookies'
 
-export default function Profile({ profile, token }) {
+export default function Profile({ profile }) {
     const router = useRouter()
     const [loadingDialog, setLoadingDialog] = useState(false)
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
     return (
         <>
             <MetaLayout title="Profile" description="Profile" />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
 
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Profile" authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Profile" />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
 
                         <div className="m-4 p-4 shadow rounded bg-white">
 
                             <div className="relative">
-                                <label className="text-black pb-2 block text-xl left-0 absolute">Personal Details</label>
-                                <Link href={{
-                                    pathname: '/profile/edit_personal_details',
-                                    query: { token: token }
-                                }}>
+                                <div className="left-0 absolute">
+                                    <label className="text-black block text-base font-medium ">Personal Details</label>
+                                    <div className="mt-2 w-12 h-0.5 rounded bg-lblue"></div>
+                                </div>
+
+                                <Link href='/profile/edit_personal_details'>
                                     <a
                                         className="py-2 px-8 border border-lblue rounded-full text-sm font-medium text-lblue bg-white hover:bg-lblue hover:text-white focus:outline-none absolute right-0 duration-500">
                                         Edit
@@ -48,10 +49,9 @@ export default function Profile({ profile, token }) {
                                 </Link>
                             </div>
 
-                            <div className="mt-10 w-12 h-0.5 rounded bg-lblue"></div>
-                            <div className="sm:flex mt-4">
+                            <div className="sm:flex mt-12">
                                 <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
-                                    <img className="w-32 h-32 rounded-full"
+                                    <img className="w-24 h-24 rounded-full"
                                         src={
                                             (profile.profile_image == null || profile.profile_image == "") ?
                                                 "../img/upload.svg" : profile.profile_image
@@ -107,11 +107,11 @@ export default function Profile({ profile, token }) {
                             <div className="my-4 w-full h-0.5 rounded bg-lgrey-border"></div>
 
                             <div className="relative">
-                                <label className="text-black pb-2 block text-xl left-0 absolute">Child Details</label>
-                                <Link href={{
-                                    pathname: '/profile/edit_child_details',
-                                    query: { token: token }
-                                }}>
+                                <div className="left-0 absolute">
+                                    <label className="text-black block text-base font-medium ">Child Details</label>
+                                    <div className="mt-2 w-12 h-0.5 rounded bg-lblue"></div>
+                                </div>
+                                <Link href='/profile/edit_child_details'>
                                     <a
                                         className="py-2 px-8 border border-lblue rounded-full text-sm font-medium text-lblue bg-white hover:bg-lblue hover:text-white focus:outline-none absolute right-0 duration-500">
                                         Edit
@@ -119,32 +119,29 @@ export default function Profile({ profile, token }) {
                                 </Link>
                             </div>
 
-                            <div className="mt-14 w-12 h-0.5 rounded bg-lblue"></div>
                             <div className="sm:flex mt-4">
-                                <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
-                                    <img className="w-32 h-32 rounded-full"
+                                {/* <div className="mt-14 mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+                                    <img className="w-24 h-24 rounded-full"
                                         src={
                                             (profile.profile_image == null || profile.profile_image == "") ?
-                                                "../img/upload.svg" : profile.profile_image
+                                                "../img/upload.svg" : "../img/upload.svg"
                                         }
                                         alt="" />
-                                </div>
-                                <div className="self-center">
+                                </div> */}
+                                <div className="mt-12 self-center">
                                     <div className="text-base font-bold">{profile.child_details.child_name}</div>
-                                    <div className="text-sm mt-1 text-gray-400">{profile.child_details.gender} | {profile.child_details.grade} Class</div>
+                                    <div className="text-sm mt-1 text-gray-400">{profile.child_details.gender}</div>
+                                    <div className="text-sm mt-1 text-gray-400">{profile.child_details.grade} Class | {profile.child_details.school_name}</div>
                                 </div>
                             </div>
 
                             <div className="mt-4 w-full h-0.5 rounded bg-lgrey-border"></div>
 
-                            <label className="text-black mt-4 pb-2 block text-xl">Your Prefrences</label>
+                            <label className="text-black mt-4 pb-2 block text-base font-medium">Your Prefrences</label>
                             <div className="mt-1 w-12 h-0.5 rounded bg-lblue"></div>
 
                         </div>
 
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center font-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
@@ -156,7 +153,7 @@ export default function Profile({ profile, token }) {
 }
 
 export async function getServerSideProps(context) {
-    const { token } = context.query
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {

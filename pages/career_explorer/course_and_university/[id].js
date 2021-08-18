@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
+import { Listbox, Dialog, Transition } from '@headlessui/react'
 import {
-    BookmarkIcon
+    BookmarkIcon,
+    SelectorIcon
 } from '@heroicons/react/outline'
 import {
     SearchIcon,
@@ -14,30 +16,128 @@ import NavigationLayout from '/components/NavigationLayout'
 import HeaderLayout from '/components/HeaderLayout'
 import MetaLayout from '/components/MetaLayout'
 import "react-multi-carousel/lib/styles.css";
-import { SchemeGetUniversity } from '../../../helpers/GraphQLSchemes'
+import { SchemeGetUniversity, SchemeAddBookmark, SchemeVideoStatus, SchemeGetUniversityBookmark, SchemeUpdateUniversityBookmark, SchemeAllUniversityCareerPools, SchemeUniversityCareerFields } from '../../../helpers/GraphQLSchemes'
+import { mutateGraph } from '../../../helpers/GraphQLCaller'
+import Breadcrumbs from '../../../components/Breadcrumbs'
+import { useRouter } from 'next/router'
 
-export default function University({ profile, university, token }) {
+import cookies from 'next-cookies'
+import LoadingDialog from '../../../components/dialog/LoadingDialog'
+import NotificationLayout from '../../../components/NotificationLayout'
+import classNames from '/helpers/classNames'
+
+export default function University({ profile, university, token, careerPools, poolIdFilter, fieldIdFilter }) {
+    const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
+    const [searchText, setSearchText] = useState("")
+    const [bookmarkStatus, setBookmarkStatus] = useState(university.bookmark_status)
 
+    const [loadingDialog, setLoadingDialog] = useState(false)
+
+    const [openFilter, setOpenFilter] = useState(false)
+    const [selectedCareerPool, setSelectedCareerPool] = useState({})
+    const [careerFields, setCareerFields] = useState([])
+    const [selectedCareerField, setSelectedCareerField] = useState({})
+    useEffect(() => {
+        updateCareerPools(poolIdFilter == -1 ? {} : careerPools.find(cp => cp.id == poolIdFilter))
+    }, [])
+    const addToBookmark = (id) => {
+        setLoadingDialog(true)
+        const careerClient = new ApolloClient({
+            uri: Constants.baseUrl + "/api/career",
+            cache: new InMemoryCache(),
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+        })
+        mutateGraph(careerClient, {
+            college_id: parseInt(id)
+        }, SchemeUpdateUniversityBookmark)
+            .then((res) => {
+                setLoadingDialog(false)
+                setBookmarkStatus(res.universityBookmark.bookmark_status)
+                console.log(res.universityBookmark)
+
+            }).catch((networkErr) => {
+                setLoadingDialog(false)
+                console.log('error')
+            })
+
+    }
+
+    const pages = [
+        {
+            name: 'Career Explorer', href: '/career_explorer/', current: false
+        },
+        {
+            name: 'Course & University', href: '/career_explorer/course_and_university', current: false
+        },
+        {
+            name: 'University Details', href: '#', current: true
+        },
+    ]
+
+    const clearFilter = (event) => {
+        setSelectedCareerPool({})
+        setSelectedCareerField({})
+        router.replace(
+            {
+                pathname: '/career_explorer/course_and_university/' + university.id,
+            }
+        )
+        setOpenFilter(false)
+    }
+
+    const applyFilter = (event) => {
+        const queryParam = {}
+        if (selectedCareerPool.id != null)
+            queryParam.pool_id = selectedCareerPool.id
+        if (selectedCareerField != null && selectedCareerField.id != null)
+            queryParam.field_id = selectedCareerField.id
+        if (searchText != null && searchText != "")
+            queryParam.q = searchText
+        router.replace(
+            {
+                pathname: '/career_explorer/course_and_university/' + university.id,
+                query: queryParam,
+            }
+        )
+        setOpenFilter(false)
+    }
+    const search = (event) => {
+        const queryParam = {}
+        if (selectedCareerPool.id != null)
+            queryParam.pool_id = selectedCareerPool.id
+        if (selectedCareerField != null && selectedCareerField.id != null)
+            queryParam.field_id = selectedCareerField.id
+        if (searchText != null && searchText != "")
+            queryParam.q = searchText
+        router.replace(
+            {
+                pathname: '/career_explorer/course_and_university/' + university.id,
+                query: queryParam,
+            }
+        )
+    }
     return (
         <>
             <MetaLayout title={university.name} description={university.description} />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="4" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Career Explorer / Course & University / University Details" authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={university.name} />
+
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
-
+                        <Breadcrumbs pages={pages} />
                         <div className="m-4">
 
                             <div className="max-w-6xl mx-auto mt-4">
                                 <div className="flex flex-col mt-2">
 
-                                    <div className="max-w-3xl mx-auto grid grid-cols-1 gap-4 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+                                    <div className="w-full max-w-3xl mx-auto grid grid-cols-1 gap-4 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
                                         <div className="lg:col-start-1 lg:col-span-2">
                                             <div className="bg-white align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg p-4">
                                                 <div className="sm:flex h-full w-full">
@@ -50,9 +150,10 @@ export default function University({ profile, university, token }) {
                                                                 <div className="bg-gray-200 px-4 py-2 text-xs rounded-full cursor-pointer duration-500 hover:text-white hover:bg-lblue">University</div>
                                                             </div>
 
-                                                            <div className="py-2 flex items-center absolute right-0">
-                                                                <BookmarkIcon className="w-5 h-5 mr-2" />
-                                                                Add to bookmark
+                                                            <div onClick={() => addToBookmark(university.id)} className="flex items-center absolute right-0">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" fill={bookmarkStatus == 1 ? "lightblue" : "white"}>
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                                                </svg>
                                                             </div>
 
                                                         </div>
@@ -65,33 +166,55 @@ export default function University({ profile, university, token }) {
 
                                             <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg mt-4 bg-white p-4">
                                                 <div className="sm:flex h-full w-full">
-                                                    <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-8 self-center" >
+                                                    <div className="mb-4 flex-shrink-0 sm:mb-0 sm:mr-8" >
                                                         <div className="self-center font-medium text-base w-full">
-                                                            <h2 className="text-base">Course's Offered</h2>
+                                                            <h2 className="text-xl ">Course's Offered</h2>
                                                         </div>
                                                     </div>
                                                     <div className="w-full">
-                                                        <form className="w-full flex md:ml-0" action="#" method="GET">
-                                                            <label htmlFor="search_field" className="sr-only">
-                                                                Search
-                                                            </label>
-                                                            <div className="relative w-full text-gray-400 focus-within:text-gray-600 rounded bg-lgrey">
-                                                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none" aria-hidden="true">
+                                                        <label htmlFor="search_field" className="sr-only">
+                                                            Search
+                                                        </label>
+                                                        <div className="relative w-full text-gray-400 ">
+                                                            <div className="flex absolute rounded bg-lgrey left-4  right-24 focus-within:text-gray-600 ">
+                                                                <div className="p-2 items-center pointer-events-none" aria-hidden="true">
                                                                     <SearchIcon className="h-5 w-5" aria-hidden="true" />
                                                                 </div>
                                                                 <input
                                                                     id="search_field"
                                                                     name="search_field"
-                                                                    className="block w-full h-full pl-12 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm bg-transparent"
-                                                                    placeholder="Search Course"
+                                                                    className="block w-full h-full p-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm bg-transparent "
+                                                                    placeholder="Search University"
                                                                     type="search"
+                                                                    value={searchText}
+                                                                    onChange={(e) => setSearchText(e.target.value)}
+
                                                                 />
+
                                                             </div>
-                                                        </form>
+
+                                                            <button className="flex p-2 w-20 absolute right-0 items-center bg-lblue rounded sm:text-sm text-white" aria-hidden="true"
+                                                                onClick={(event) => {
+                                                                    setOpenFilter(true)
+                                                                }}>
+                                                                <div>Filter</div>
+                                                                <img className="ml-2" src="/img/filter-icon.png" />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className="mt-4">
-                                                    {university.career_courses.map((u) => (
+                                                    {university.career_courses.length > 0 && university.career_courses.filter((u) => {
+                                                        if (searchText.trim() === "") {
+
+                                                            return u;
+                                                        }
+                                                        if (u.name.toLowerCase().includes(searchText.toLowerCase())) {
+
+                                                            return u;
+                                                        }
+                                                        return "";
+                                                    }).map((u) => (
                                                         <div className="rounded shadow p-4 my-4 hover:shadow-xl duration-500">
                                                             <div className="flex">
                                                                 <div className="relative w-20 h-20 rounded-lg overflow-hidden">
@@ -165,13 +288,13 @@ export default function University({ profile, university, token }) {
                                         </div>
 
                                         <section aria-labelledby="timeline-title" className="lg:col-start-3 lg:col-span-1">
-                                            <div className="bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
+                                            {/* <div className="bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
                                                 <h2 id="timeline-title" className="text-lg font-medium text-gray-900">
                                                     University Video
                                                 </h2>
                                                 <img className="rounded mt-2" src="/img/test.png" />
-                                            </div>
-                                            <div className="mt-4 bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
+                                            </div> */}
+                                            <div className="mt-0 bg-white px-4 py-4 shadow sm:rounded-lg sm:px-4">
                                                 <div className="flex ">
                                                     <svg
                                                         width="48px"
@@ -262,21 +385,236 @@ export default function University({ profile, university, token }) {
                                 </div>
                             </div>
                         </div>
-
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
 
-            </div >
+            </div>
+
+            <LoadingDialog showDialog={loadingDialog} setShowDialog={setLoadingDialog} />
+            <Transition.Root show={openFilter} as={Fragment}>
+                <Dialog
+                    as="div"
+                    static
+                    className="fixed z-10 inset-0 overflow-y-auto"
+                    open={openFilter}
+                    onClose={setOpenFilter}
+                >
+                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                        </Transition.Child>
+
+                        {/* This element is to trick the browser into centering the modal contents. */}
+                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+                            &#8203;
+                        </span>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        >
+                            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-4">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="text-center sm:text-left w-full">
+                                        <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900 text-center">
+                                            Filter
+                                        </Dialog.Title>
+                                        <div className="font-medium text-base mt-4">Career Pools</div>
+                                        <Listbox value={selectedCareerPool} onChange={updateCareerPools}>
+                                            {({ open }) => (
+                                                <>
+                                                    <div className="mt-1 relative mt-2">
+                                                        <Listbox.Button className="relative w-full bg-gray-100 border rounded-full shadow-sm pl-3 pr-10 py-2 text-left cursor-default outline-none focus:outline-none focus:border-indigo-700 sm:text-sm border border-gray-300 " >
+                                                            <span className={classNames(selectedCareerPool.name ? '' : 'text-gray-400', "block truncate")}>{selectedCareerPool.name ? selectedCareerPool.name : 'Career Pools'}</span>
+                                                            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                                                <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                            </span>
+                                                        </Listbox.Button>
+
+                                                        <Transition className="sticky"
+                                                            show={open}
+                                                            as={Fragment}
+                                                            leave="transition ease-in duration-100"
+                                                            leaveFrom="opacity-100"
+                                                            leaveTo="opacity-0"
+                                                        >
+                                                            <Listbox.Options
+                                                                static
+                                                                className="sticky absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                                                            >
+                                                                {
+                                                                    careerPools.length > 0 ?
+                                                                        careerPools.map((cp) => (
+                                                                            <Listbox.Option
+                                                                                key={cp.name}
+                                                                                className={({ active }) =>
+                                                                                    classNames(
+                                                                                        active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                                                                                        'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                                                    )
+                                                                                }
+                                                                                value={cp}
+                                                                            >
+                                                                                {({ selected, active }) => (
+                                                                                    <>
+                                                                                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                                                            {cp.name}
+                                                                                        </span>
+
+
+                                                                                    </>
+                                                                                )}
+                                                                            </Listbox.Option>
+                                                                        )) : <Listbox.Option
+                                                                            key='no_data'
+                                                                            className={({ active }) =>
+                                                                                classNames(
+                                                                                    active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                                                                                    'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                                                )
+                                                                            }
+                                                                            value="No Data">
+                                                                            <span className={classNames('font-normal', 'block truncate')}>
+                                                                                No Data
+                                                                            </span>
+                                                                        </Listbox.Option>
+                                                                }
+                                                            </Listbox.Options>
+                                                        </Transition>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </Listbox>
+                                        <div className="font-medium text-base mt-4">Career Fields</div>
+                                        <Listbox value={selectedCareerField} onChange={setSelectedCareerField}>
+                                            {({ open }) => (
+                                                <>
+                                                    <div className="mt-1 relative mt-2">
+                                                        <Listbox.Button className="relative w-full bg-gray-100 border rounded-full shadow-sm pl-3 pr-10 py-2 text-left cursor-default outline-none focus:outline-none focus:border-indigo-700 sm:text-sm border border-gray-300 " >
+                                                            <span className={classNames(selectedCareerField && selectedCareerField.name ? '' : 'text-gray-400', "block truncate")}>{selectedCareerField && selectedCareerField.name ? selectedCareerField.name : 'Career Fields'}</span>
+                                                            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                                                <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                                                            </span>
+                                                        </Listbox.Button>
+
+                                                        <Transition className="sticky"
+                                                            show={open}
+                                                            as={Fragment}
+                                                            leave="transition ease-in duration-100"
+                                                            leaveFrom="opacity-100"
+                                                            leaveTo="opacity-0"
+                                                        >
+                                                            <Listbox.Options
+                                                                static
+                                                                className="sticky absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                                                            >
+                                                                {
+                                                                    careerFields.length > 0 ?
+                                                                        careerFields.map((cf) => (
+                                                                            <Listbox.Option
+                                                                                key={cf.name}
+                                                                                className={({ active }) =>
+                                                                                    classNames(
+                                                                                        active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                                                                                        'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                                                    )
+                                                                                }
+                                                                                value={cf}
+                                                                            >
+                                                                                {({ selected, active }) => (
+                                                                                    <>
+                                                                                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                                                            {cf.name}
+                                                                                        </span>
+
+
+                                                                                    </>
+                                                                                )}
+                                                                            </Listbox.Option>
+                                                                        )) : <Listbox.Option
+                                                                            key='no_data'
+                                                                            className={({ active }) =>
+                                                                                classNames(
+                                                                                    active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                                                                                    'cursor-default select-none relative py-2 pl-8 pr-4'
+                                                                                )
+                                                                            }
+                                                                            value="No Data">
+                                                                            <span className={classNames('font-normal', 'block truncate')}>
+                                                                                No Data
+                                                                            </span>
+                                                                        </Listbox.Option>
+                                                                }
+                                                            </Listbox.Options>
+                                                        </Transition>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </Listbox>
+
+                                    </div>
+                                </div>
+                                <div className="mt-4 sm:mt-4 sm:flex">
+                                    <button
+                                        type="button"
+                                        className="flex justify-center py-2 px-8 border border-transparent rounded-full shadow-sm text-sm font-medium text-indigo-700 bg-white hover:bg-indigo-700 hover:text-white focus:outline-none border border-indigo-700 cursor-pointer duration-500"
+                                        onClick={clearFilter}
+                                    >
+                                        Clear
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="ml-4 flex justify-center py-2 px-8 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
+                                        onClick={applyFilter}
+                                    >
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition.Root>
+
         </>
     )
+    function updateCareerPools(careerPool) {
+        setSelectedCareerPool(careerPool)
+        setSelectedCareerField({})
+        const careerClient = new ApolloClient({
+            uri: Constants.baseUrl + "/api/career",
+            cache: new InMemoryCache(),
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+        })
+        if (careerPool.id)
+            queryGraph(careerClient, { pool_id: parseInt(careerPool.id), college_id: parseInt(university.id) }, SchemeUniversityCareerFields)
+                .then((res) => {
+                    setCareerFields(res.universityFields)
+                    setSelectedCareerField(fieldIdFilter == -1 ? {} : res.universityFields.find(cf => cf.id == fieldIdFilter))
+                }).catch((networkErr) => {
+                    console.log('error')
+                })
+    }
 }
 
 export async function getServerSideProps(context) {
-    const { token } = context.query;
+    const { token } = cookies(context)
+    const { pool_id = -1, field_id = -1, q = "" } = context.query
     if (token == null || token == '') {
         return {
             redirect: {
@@ -292,13 +630,31 @@ export async function getServerSideProps(context) {
             Authorization: "Bearer " + token,
         },
     })
-    const university = await queryGraph(careerClient, { id: parseInt(context.params.id) }, SchemeGetUniversity)
+    const params = {
+        id: parseInt(context.params.id)
+    }
+    if (pool_id != -1)
+        params.pool_id = parseInt(pool_id)
+
+    if (field_id != -1)
+        params.field_id = parseInt(field_id)
+
+    const university = await queryGraph(careerClient, params, SchemeGetUniversity)
         .then((res) => {
+            console.log('Hello' + res.universityDetails)
             return res.universityDetails[0]
         }).catch((networkErr) => {
+            console.log(networkErr)
             return {}
         })
     console.log(university)
+    const careerPools = await queryGraph(careerClient, { college_id: parseInt(context.params.id) }, SchemeAllUniversityCareerPools)
+        .then((res) => {
+            return res.universityPool
+        }).catch((networkErr) => {
+            console.log(networkErr)
+            return [];
+        })
     const profileClient = new ApolloClient({
         uri: Constants.baseUrl + "/api/user",
         cache: new InMemoryCache(),
@@ -313,7 +669,7 @@ export async function getServerSideProps(context) {
             return {};
         })
     return {
-        props: { profile, university, token }
+        props: { profile, university, token, careerPools, poolIdFilter: pool_id, fieldIdFilter: field_id, }
     }
 }
 

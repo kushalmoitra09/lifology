@@ -1,7 +1,4 @@
-import { Fragment, useState } from 'react'
-import {
-    SelectorIcon
-} from '@heroicons/react/solid'
+import { useState, useEffect } from 'react'
 import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
@@ -14,90 +11,45 @@ import MetaLayout from '/components/MetaLayout'
 
 import classNames from '/helpers/classNames'
 
-import { Listbox, Transition, Dialog } from '@headlessui/react'
-
-import styles from '/styles/Report.module.css'
-import Expand from 'react-expand-animated';
-
 import "react-multi-carousel/lib/styles.css";
 
-import { Bar, Line, Pie } from 'react-chartjs-2';
-
 import ReactCardCarousel from 'react-card-carousel';
+import { SchemeGetAssessment, SchemeGetMTIReport, SchemeGetSummaryDetails } from '../../../../helpers/GraphQLSchemes'
+import Breadcrumbs from '../../../../components/Breadcrumbs'
+import cookies from 'next-cookies'
 
-export default function PurpleZone({ profile, token }) {
+export default function MTIReport({ profile, assessment, report, summaryDetails }) {
     const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
-
-
-    const [openOD, setOpenOD] = useState(true)
-    const [openSCR, setOpenSCR] = useState(false)
 
     const [openLS, setOpenLS] = useState(true)
     const [openWMY, setOpenWMY] = useState(false)
     const [openDWTW, setOpenDWTW] = useState(false)
 
-    const [openVisual, setOpenVisual] = useState(false)
-
-    const wmys = [
-        {
-            image: '/img/mti_report_wmy.png',
-            text: 'Freedom of expression'
-        },
-        {
-            image: '/img/mti_report_wmy.png',
-            text: 'Freedom of expression'
-        },
-        {
-            image: '/img/mti_report_wmy.png',
-            text: 'Freedom of expression'
-        }
-    ]
-    const lss = [
-        {
-            image: '/img/mti_report_ls.png',
-            text: 'You may be able to bring people together to achieve your goals'
-        },
-        {
-            image: '/img/mti_report_ls.png',
-            text: 'You may be able to bring people together to achieve your goals'
-        },
-        {
-            image: '/img/mti_report_ls.png',
-            text: 'You may be able to bring people together to achieve your goals'
-        }
-    ]
-    const dwtws = [
-        {
-            image: '/img/mti_report_dwtw.png',
-            text: 'You may like to keep the environment positive with your enthusiasm and positive sense of humor'
-        },
-        {
-            image: '/img/mti_report_dwtw.png',
-            text: 'You may like to keep the environment positive with your enthusiasm and positive sense of humor'
-        },
-        {
-            image: '/img/mti_report_dwtw.png',
-            text: 'You may like to keep the environment positive with your enthusiasm and positive sense of humor'
-        }
-    ]
-    const index = 4;
     var carouselLS;
     var carouselWMY;
     var carouselDWTW;
+
+    const pages = [
+        {
+            name: 'My Child', href: '/my_child/', current: false
+        },
+        {
+            name: assessment.title + ' Report', href: '#', current: true
+        },
+    ]
     return (
         <>
-            <MetaLayout title="MIO Assement Reports" description="MIO Assement Reports" />
+            <MetaLayout title="MTI Assement Reports" description="MTI Assement Reports" />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="My Child / MIO Assesment" authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="MTI Report" />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
-
+                        <Breadcrumbs pages={pages} />
                         <div className="m-4">
 
                             <div className="max-w-6xl mx-auto mt-4">
@@ -108,16 +60,25 @@ export default function PurpleZone({ profile, token }) {
                                             {/* Description list*/}
                                             <section aria-labelledby="applicant-information-title" >
                                                 <div className="bg-white rounded-md shadow h-30 p-4" style={{ height: "fit-content" }}>
-                                                    <p className="font-medium">Assesment/MIO Assesment</p>
-                                                    <div className="flex mt-2">
-                                                        <div className="bg-black w-20 rounded-md">
-                                                            <p className="text-white p-2 px-2">CAREER FITMENT</p>
+                                                    <p className="font-medium">Assesment/MTI Assesment</p>
+                                                    <div className="sm:flex mt-4">
+                                                        {/* <div className="relative flex-shrink-0 sm:mb-0 sm:mr-4">
+                                                            <img className="w-24 h-24 rounded" src={assessment.dash_cards_image} />
+                                                            <div className="absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white font-medium text-lg">{assessment.title}</div>
+                                                        </div> */}
+                                                        <div className="h-24 mr-4 rounded" style={{ backgroundImage: 'url("' + assessment.dash_cards_image + '")' }}>
+                                                            {/* <img className="w-full h-24 rounded" src="https://cdn.lifology.com/m/dash/card_small_1.jpg" /> */}
+                                                            <div className="p-4 text-white font-medium text-lg">{assessment.title}</div>
                                                         </div>
-                                                        <div className="ml-4 mr-4 font-medium">Career Fitment
-                                                            <div className="text-xs font-normal">Do you think your child has mastery over their immediate environment</div>
+                                                        <div className="flex">
+                                                            <div>
+                                                                <div className="text-base font-medium">{assessment.reports.title}</div>
+                                                                <div className="mt-1 text-xs font-normal text-justify">
+                                                                    {assessment.reports.description}
+                                                                </div>
+                                                            </div>
+                                                            <img className="ml-4 w-16 object-contain" src="/img/fitment.png" alt="fitment" />
                                                         </div>
-                                                        <img src="/img/fitment.png" alt="fitment" width="75px" height="40px" />
-                                                        {/* <div className="bg-yellow-400 w-20"><p className="text-white p-2">Image</p> </div> */}
                                                     </div>
                                                 </div>
 
@@ -132,9 +93,9 @@ export default function PurpleZone({ profile, token }) {
                                                                     d="M 62 0 C 67.092 0 72.095 1.341 76.504 3.887 C 80.914 6.434 84.575 10.098 87.12 14.508 L 96.639 31.008 C 99.181 35.414 100.52 40.413 100.52 45.5 C 100.52 50.587 99.181 55.586 96.639 59.992 L 87.12 76.492 C 84.575 80.902 80.914 84.566 76.504 87.113 C 72.095 89.659 67.092 91 62 91 L 43 91 C 37.908 91 32.905 89.659 28.496 87.113 C 24.086 84.566 20.425 80.902 17.88 76.492 L 8.361 59.992 C 5.819 55.586 4.48 50.587 4.48 45.5 C 4.48 40.413 5.819 35.414 8.361 31.008 L 17.88 14.508 C 20.425 10.098 24.086 6.434 28.496 3.887 C 32.905 1.341 37.908 0 43 0 Z"
                                                                     stroke-width="1" />
                                                             </svg>
-                                                            <div className="text-lg text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">82%</div>
+                                                            <div className="text-base text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">{summaryDetails.FOLLOWER + "%"}</div>
                                                         </div>
-                                                        <div className="mt-2 text-sm text-center">FACT</div>
+                                                        <div className="mt-2 text-sm text-center">FOLLOWER</div>
                                                     </div>
                                                     <div>
                                                         <div className="relative">
@@ -146,9 +107,9 @@ export default function PurpleZone({ profile, token }) {
                                                                     d="M 62 0 C 67.092 0 72.095 1.341 76.504 3.887 C 80.914 6.434 84.575 10.098 87.12 14.508 L 96.639 31.008 C 99.181 35.414 100.52 40.413 100.52 45.5 C 100.52 50.587 99.181 55.586 96.639 59.992 L 87.12 76.492 C 84.575 80.902 80.914 84.566 76.504 87.113 C 72.095 89.659 67.092 91 62 91 L 43 91 C 37.908 91 32.905 89.659 28.496 87.113 C 24.086 84.566 20.425 80.902 17.88 76.492 L 8.361 59.992 C 5.819 55.586 4.48 50.587 4.48 45.5 C 4.48 40.413 5.819 35.414 8.361 31.008 L 17.88 14.508 C 20.425 10.098 24.086 6.434 28.496 3.887 C 32.905 1.341 37.908 0 43 0 Z"
                                                                     stroke-width="1" />
                                                             </svg>
-                                                            <div className="text-lg text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">82%</div>
+                                                            <div className="text-base text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">{summaryDetails.SUSTAINER + "%"}</div>
                                                         </div>
-                                                        <div className="mt-2 text-sm text-center">ACTION</div>
+                                                        <div className="mt-2 text-sm text-center">SUSTAINER</div>
                                                     </div>
                                                     <div>
                                                         <div className="relative">
@@ -160,9 +121,9 @@ export default function PurpleZone({ profile, token }) {
                                                                     d="M 62 0 C 67.092 0 72.095 1.341 76.504 3.887 C 80.914 6.434 84.575 10.098 87.12 14.508 L 96.639 31.008 C 99.181 35.414 100.52 40.413 100.52 45.5 C 100.52 50.587 99.181 55.586 96.639 59.992 L 87.12 76.492 C 84.575 80.902 80.914 84.566 76.504 87.113 C 72.095 89.659 67.092 91 62 91 L 43 91 C 37.908 91 32.905 89.659 28.496 87.113 C 24.086 84.566 20.425 80.902 17.88 76.492 L 8.361 59.992 C 5.819 55.586 4.48 50.587 4.48 45.5 C 4.48 40.413 5.819 35.414 8.361 31.008 L 17.88 14.508 C 20.425 10.098 24.086 6.434 28.496 3.887 C 32.905 1.341 37.908 0 43 0 Z"
                                                                     stroke-width="1" />
                                                             </svg>
-                                                            <div className="text-lg text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">82%</div>
+                                                            <div className="text-base text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">{summaryDetails.INFLUENCER + "%"}</div>
                                                         </div>
-                                                        <div className="mt-2 text-sm text-center">CONCEPT</div>
+                                                        <div className="mt-2 text-sm text-center">INFLUENCER</div>
                                                     </div>
                                                     <div>
                                                         <div className="relative">
@@ -174,9 +135,9 @@ export default function PurpleZone({ profile, token }) {
                                                                     d="M 62 0 C 67.092 0 72.095 1.341 76.504 3.887 C 80.914 6.434 84.575 10.098 87.12 14.508 L 96.639 31.008 C 99.181 35.414 100.52 40.413 100.52 45.5 C 100.52 50.587 99.181 55.586 96.639 59.992 L 87.12 76.492 C 84.575 80.902 80.914 84.566 76.504 87.113 C 72.095 89.659 67.092 91 62 91 L 43 91 C 37.908 91 32.905 89.659 28.496 87.113 C 24.086 84.566 20.425 80.902 17.88 76.492 L 8.361 59.992 C 5.819 55.586 4.48 50.587 4.48 45.5 C 4.48 40.413 5.819 35.414 8.361 31.008 L 17.88 14.508 C 20.425 10.098 24.086 6.434 28.496 3.887 C 32.905 1.341 37.908 0 43 0 Z"
                                                                     stroke-width="1" />
                                                             </svg>
-                                                            <div className="text-lg text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">82%</div>
+                                                            <div className="text-base text-white absolute text-center top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4">{summaryDetails.COMMANDER + "%"}</div>
                                                         </div>
-                                                        <div className="mt-2 text-sm text-center">EMOTION</div>
+                                                        <div className="mt-2 text-sm text-center">COMMANDER</div>
                                                     </div>
                                                 </div>
 
@@ -318,7 +279,7 @@ export default function PurpleZone({ profile, token }) {
                                                     }}>
                                                         <ReactCardCarousel style={{ height: '200px' }}
                                                             ref={Carousel => carouselLS = Carousel}>
-                                                            {lss.map((card) => (
+                                                            {report.leadership_strength.map((card) => (
                                                                 <div style={{
                                                                     height: '100%',
                                                                     width: '250px',
@@ -385,7 +346,7 @@ export default function PurpleZone({ profile, token }) {
                                                     }}>
                                                         <ReactCardCarousel style={{ height: '200px' }}
                                                             ref={Carousel => carouselWMY = Carousel}>
-                                                            {wmys.map((card) => (
+                                                            {report.your_motivation.map((card) => (
                                                                 <div style={{
                                                                     height: '100%',
                                                                     width: '250px',
@@ -454,7 +415,7 @@ export default function PurpleZone({ profile, token }) {
                                                     }}>
                                                         <ReactCardCarousel style={{ height: '200px' }}
                                                             ref={Carousel => carouselDWTW = Carousel}>
-                                                            {dwtws.map((card) => (
+                                                            {report.world_dealing.map((card) => (
                                                                 <div style={{
                                                                     height: '100%',
                                                                     width: '250px',
@@ -508,10 +469,6 @@ export default function PurpleZone({ profile, token }) {
                                 </div>
                             </div>
                         </div>
-
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
@@ -525,7 +482,7 @@ export default function PurpleZone({ profile, token }) {
 // }
 
 export async function getServerSideProps(context) {
-    const { token } = context.query;
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {
@@ -534,7 +491,32 @@ export async function getServerSideProps(context) {
             }
         }
     }
-
+    const careerClient = new ApolloClient({
+        uri: Constants.baseUrl + "/api/assessment",
+        cache: new InMemoryCache(),
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+    const assessment = await queryGraph(careerClient, { id: parseInt(context.params.id) }, SchemeGetAssessment)
+        .then((res) => {
+            return res.assessmentDetails
+        }).catch((networkErr) => {
+            return {}
+        })
+    const report = await queryGraph(careerClient, {}, SchemeGetMTIReport)
+        .then((res) => {
+            return res.environmentalInteractions
+        }).catch((networkErr) => {
+            return {};
+        });
+    const summaryDetails = await queryGraph(careerClient, { id: parseInt(context.params.id) }, SchemeGetSummaryDetails)
+        .then((res) => {
+            return JSON.parse(res.assessmentDetails.summary_report)
+        }).catch((networkErr) => {
+            return {};
+        })
+    console.log(summaryDetails)
     const profileClient = new ApolloClient({
         uri: Constants.baseUrl + "/api/user",
         cache: new InMemoryCache(),
@@ -549,7 +531,7 @@ export async function getServerSideProps(context) {
             return {};
         });
     return {
-        props: { profile, token }
+        props: { profile, assessment, report, token, summaryDetails }
     }
 }
 

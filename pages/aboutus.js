@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { queryGraph } from '/helpers/GraphQLCaller'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { SchemeGetProfile } from '/helpers/GraphQLSchemes'
@@ -12,10 +12,11 @@ import "react-multi-carousel/lib/styles.css";
 import MetaLayout from '../components/MetaLayout'
 import SettingNavigationLayout from '../components/SettingNavigationLayout'
 
-export default function AboutUs({ profile, token }) {
+import cookies from 'next-cookies'
+
+export default function AboutUs({ profile }) {
     const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
 
     const index = 1;
     return (
@@ -23,10 +24,10 @@ export default function AboutUs({ profile, token }) {
             <MetaLayout title="About Us" description="About Us" />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Settings / About Us" authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title="Settings / About Us" />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
 
@@ -39,7 +40,7 @@ export default function AboutUs({ profile, token }) {
                                         <div className="space-y-6 lg:col-start-1 lg:col-span-1">
                                             {/* Description list*/}
                                             <section aria-labelledby="applicant-information-title" >
-                                                <SettingNavigationLayout index="1" authToken={token} />
+                                                <SettingNavigationLayout index="1" />
                                             </section>
 
                                         </div>
@@ -61,9 +62,6 @@ export default function AboutUs({ profile, token }) {
                             </div>
                         </div>
 
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
@@ -72,12 +70,8 @@ export default function AboutUs({ profile, token }) {
         </>
     )
 }
-// JobFamilies.getInitialProps = async (context) => {
-// const [authToken, setAuthToken] = useLocalStorage("authToken", "")
-// }
-
 export async function getServerSideProps(context) {
-    const { token } = context.query
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {

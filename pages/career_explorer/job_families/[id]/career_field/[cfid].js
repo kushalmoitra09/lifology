@@ -11,7 +11,7 @@ import NavigationLayout from '/components/NavigationLayout'
 import HeaderLayout from '/components/HeaderLayout'
 import MetaLayout from '/components/MetaLayout'
 import "react-multi-carousel/lib/styles.css";
-import { SchemeCareerPools, SchemeCareerFields, SchemeGetProfile, SchemeGetUniversities } from '/helpers/GraphQLSchemes'
+import { SchemeCareerPools, SchemeCareerFields, SchemeGetProfile, SchemeGetUniversities, SchemeGetArticleData } from '/helpers/GraphQLSchemes'
 import VideoDialog from '/components/dialog/VideoDialog'
 import styles from '/styles/CareerField.module.css'
 
@@ -21,19 +21,58 @@ import 'keen-slider/keen-slider.min.css'
 import { useKeenSlider } from 'keen-slider/react'
 
 import Expand from 'react-expand-animated';
+import Breadcrumbs from '../../../../../components/Breadcrumbs'
+import { useRouter } from 'next/router'
+import cookies from 'next-cookies'
+import YoutubeDialog from '../../../../../components/dialog/YoutubeDialog'
 
-export default function CareerFields({ profile, jobFamily, careerField, topics, skills, employment_areas, universities, token }) {
+export default function CareerFields({ profile, jobFamily, careerField, universities, dashboard }) {
+    const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "")
     const [openVideo, setOpenVideo] = useState(false)
 
     const [openStudyTopic, setOpenStudyTopic] = useState(false)
     const [openSkillRequired, setOpenSkillRequired] = useState(false)
     const [openEmpAreas, setOpenEmpAreas] = useState(false)
 
-    const [sliderRef, slider] = useKeenSlider({
+    const [universitySliderRef, universitySlider] = useKeenSlider({
         initial: 0,
         loop: true,
+        controls: true,
+        duration: 500,
+        breakpoints: {
+            "(min-width: 464px)": {
+                slidesPerView: 1,
+            },
+            "(min-width: 768px)": {
+                slidesPerView: 2,
+            },
+            "(min-width: 1200px)": {
+                slidesPerView: 4,
+            },
+        },
+    })
+
+    const [articleSliderRef, articleSlider] = useKeenSlider({
+        initial: 0,
+        loop: false,
+        controls: true,
+        duration: 500,
+        breakpoints: {
+            "(min-width: 464px)": {
+                slidesPerView: 1,
+            },
+            "(min-width: 768px)": {
+                slidesPerView: 2,
+            },
+            "(min-width: 1200px)": {
+                slidesPerView: 4,
+            },
+        },
+    })
+    const [videoSliderRef, videoSlider] = useKeenSlider({
+        initial: 0,
+        loop: false,
         controls: true,
         duration: 500,
         breakpoints: {
@@ -53,36 +92,54 @@ export default function CareerFields({ profile, jobFamily, careerField, topics, 
     const timer = useRef()
 
     useEffect(() => {
-        sliderRef.current.addEventListener("mouseover", () => {
-            setPause(true)
-        })
-        sliderRef.current.addEventListener("mouseout", () => {
-            setPause(false)
-        })
-    }, [sliderRef])
+        if (universities.length > 0) {
+            universitySliderRef.current.addEventListener("mouseover", () => {
+                setPause(true)
+            })
+            universitySliderRef.current.addEventListener("mouseout", () => {
+                setPause(false)
+            })
+        }
+
+    }, [universitySliderRef])
     useEffect(() => {
         timer.current = setInterval(() => {
-            if (!pause && slider) {
-                slider.next()
+            if (!pause && universitySlider) {
+                universitySlider.next()
             }
         }, 1000)
         return () => {
             clearInterval(timer.current)
         }
-    }, [pause, slider])
+    }, [pause, universitySlider])
 
+    const pages = [
+        {
+            name: 'Career Explorer', href: '/career_explorer/', current: false
+        },
+        {
+            name: 'Job Families & Career Fields', href: '/career_explorer/job_families', current: false
+        },
+        {
+            name: jobFamily.name, href: '/career_explorer/job_families/' + jobFamily.id, current: false
+        },
+        {
+            name: careerField.name, href: '#', current: true
+        },
+    ]
     return (
         <>
             <MetaLayout title={jobFamily.name} description={jobFamily.description} />
             <div className="h-screen flex overflow-hidden bg-gray-100 font-roboto">
 
-                <NavigationLayout index="0" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} authToken={token} />
+                <NavigationLayout index="4" setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
 
                 <div className="flex-1 overflow-auto focus:outline-none" >
-                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={"Career Explorer / Course & University / " + jobFamily.name} authToken={token} setAuthToken={setAuthToken} />
+                    <HeaderLayout setSidebarOpen={setSidebarOpen} profile={profile} title={careerField.name} />
 
                     <main className="flex-1 relative z-0 overflow-y-auto">
 
+                        <Breadcrumbs pages={pages} />
                         <div className="m-4">
 
                             <div className="max-w-6xl mx-auto mt-4">
@@ -112,26 +169,100 @@ export default function CareerFields({ profile, jobFamily, careerField, topics, 
                                                     </div>
                                                 </div>
                                             </div>
+                                            {
+                                                universities.length > 0 ?
+                                                    <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg mt-4 bg-white">
 
-                                            <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg mt-4 bg-white">
+                                                        <div className="mx-4 mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+
+                                                            <h2 className="text-lg font-medium text-gray-900">
+                                                                Universities
+                                                            </h2>
+                                                            <Link href={{
+                                                                pathname: '/career_explorer/course_and_university',
+                                                            }}>
+                                                                <a>
+                                                                    <div className="text-lblue text-right text-base">View All</div>
+                                                                </a>
+                                                            </Link>
+
+
+                                                        </div>
+                                                        <div className="navigation-wrapper w-full">
+                                                            <div ref={universitySliderRef} className="keen-slider">
+                                                                {universities.map((card) => (
+                                                                    <div className="keen-slider__slide self-center">
+                                                                        <Link href={{
+                                                                            pathname: '/career_explorer/course_and_university/' + card.id,
+                                                                        }}>
+                                                                            <a>
+                                                                                <div className="rounded bg-gray shadow p-3 mx-2 m-4 hover:shadow-lg hover:scale-105 duration-500">
+                                                                                    <img className="ml-auto mr-auto h-32 object-contain" src={Constants.baseUrlImage + card.logo} />
+                                                                                </div>
+                                                                            </a>
+                                                                        </Link>
+
+                                                                    </div>
+                                                                ))
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div> :
+                                                    <></>
+                                            }
+
+
+
+                                            {/* <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg mt-4 bg-white">
 
                                                 <h2 className="text-lg font-medium text-gray-900 m-4 ">
-                                                    Universities
+                                                    Recommended Articles
                                                 </h2>
                                                 <div className="navigation-wrapper w-full mb-4">
-                                                    <div ref={sliderRef} className="keen-slider">
-                                                        {universities.map((card) => (
+                                                    <div ref={articleSliderRef} className="keen-slider">
+                                                        {dashboard.magazines.map((card) => (
                                                             <div className="keen-slider__slide self-center">
-                                                                <div className="">
-                                                                    <img className="ml-auto mr-auto" src={Constants.baseUrlImage + card.logo} />
+                                                                <div className="px-2">
+                                                                    <img className="ml-auto mr-auto rounded" src={card.thumbnail} />
                                                                 </div>
+                                                                <h2 className="text-sm font-medium text-gray-900 px-2 mt-2 h-10 overflow-hidden" >
+                                                                    {card.title}
+                                                                </h2>
                                                             </div>
                                                         ))
                                                         }
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
 
+                                            <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg mt-4 bg-white">
+
+                                                <h2 className="text-lg font-medium text-gray-900 mx-4 mt-4">
+                                                    Recommended Videos
+                                                </h2>
+                                                <div className="navigation-wrapper w-full mb-4">
+                                                    <div ref={videoSliderRef} className="keen-slider">
+                                                        {dashboard.videos.map((card) => (
+                                                            <Link
+                                                                href={{
+                                                                    pathname: '/career_explorer/career_video/' + card.id
+                                                                }}
+                                                            >
+                                                                <a className="keen-slider__slide self-center">
+                                                                    <div className="px-2">
+                                                                        <img className="ml-auto mr-auto rounded" src={card.thumbnail} />
+                                                                    </div>
+                                                                    <h2 className="text-sm font-medium text-gray-900 px-2 mt-2 h-10 overflow-hidden" >
+                                                                        {card.title}
+                                                                    </h2>
+                                                                </a>
+                                                            </Link>
+
+                                                        ))
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <section aria-labelledby="timeline-title" className="lg:col-start-3 lg:col-span-1">
@@ -179,10 +310,10 @@ export default function CareerFields({ profile, jobFamily, careerField, topics, 
                                                 <Expand open={openStudyTopic}>
                                                     <ul className={styles.topicGroup} style={{ marginTop: '8px' }}>
                                                         {
-                                                            topics.map((t) => {
+                                                            careerField.topics.map((t) => {
                                                                 return (
-                                                                    <li className={"flex float-left px-1 py-1 text-xs rounded-full m-1 cursor-pointer bg-opacity-10 bg-" + t.color + "-500 hover:bg-opacity-100 hover:text-white duration-500"} key={t.name}>
-                                                                        <div className={"self-center p-1 rounded-full h-6 w-6 bg-" + t.color + "-500"} >
+                                                                    <li className={"flex float-left px-1 py-1 text-xs rounded-full m-1 cursor-pointer bg-opacity-10 bg-gray-500 hover:bg-opacity-100 hover:text-white duration-500"} key={t.name}>
+                                                                        <div className={"self-center p-1 rounded-full h-6 w-6 bg-gray-500"} >
                                                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
                                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                                                             </svg>
@@ -213,9 +344,9 @@ export default function CareerFields({ profile, jobFamily, careerField, topics, 
                                                 <Expand open={openSkillRequired}>
                                                     <ul className={styles.topicGroup} style={{ marginTop: '8px' }}>
                                                         {
-                                                            skills.map((s) => (
-                                                                <li className={"flex float-left px-1 py-1 text-xs rounded-full m-1 cursor-pointer bg-opacity-10 bg-" + s.color + "-500 hover:bg-opacity-100 hover:text-white duration-500"} key={s.name}>
-                                                                    <div className={"self-center p-1 rounded-full h-6 w-6 bg-" + s.color + "-500"} >
+                                                            careerField.skills.map((s) => (
+                                                                <li className={"flex float-left px-1 py-1 text-xs rounded-full m-1 cursor-pointer bg-opacity-10 bg-gray-500 hover:bg-opacity-100 hover:text-white duration-500"} key={s.name}>
+                                                                    <div className={"self-center p-1 rounded-full h-6 w-6 bg-gray-500"} >
                                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                                                         </svg>
@@ -245,9 +376,9 @@ export default function CareerFields({ profile, jobFamily, careerField, topics, 
                                                 <Expand open={openEmpAreas}>
                                                     <ul className={styles.topicGroup} style={{ marginTop: '8px' }}>
                                                         {
-                                                            employment_areas.map((e) => (
-                                                                <li className={"flex float-left px-1 py-1 text-xs rounded-full m-1 cursor-pointer bg-opacity-10 bg-" + e.color + "-500 hover:bg-opacity-100 hover:text-white duration-500"} key={e.name}>
-                                                                    <div className={"self-center p-1 rounded-full h-6 w-6 bg-" + e.color + "-500"} >
+                                                            careerField.employment_areas.map((e) => (
+                                                                <li className={"flex float-left px-1 py-1 text-xs rounded-full m-1 cursor-pointer bg-opacity-10 bg-gray-500 hover:bg-opacity-100 hover:text-white duration-500"} key={e.name}>
+                                                                    <div className={"self-center p-1 rounded-full h-6 w-6 bg-gray-500"} >
                                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="white">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                                                         </svg>
@@ -276,16 +407,12 @@ export default function CareerFields({ profile, jobFamily, careerField, topics, 
                                 </div>
                             </div>
                         </div>
-
-                        <footer className="shadow p-4 bg-white">
-                            <div className="text-center front-medium">Copyright © 2021 Septa Milles Pvt Ltd. All Rights Reserved</div>
-                        </footer>
                     </main>
                 </div>
 
 
             </div >
-            <VideoDialog showDialog={openVideo} setShowDialog={setOpenVideo} url={careerField.video} />
+            <YoutubeDialog showDialog={openVideo} setShowDialog={setOpenVideo} url={careerField.video} />
         </>
     )
 }
@@ -297,7 +424,7 @@ const getColor = () => {
 }
 
 export async function getServerSideProps(context) {
-    const { token } = context.query
+    const { token } = cookies(context)
     if (token == null || token == '') {
         return {
             redirect: {
@@ -306,6 +433,19 @@ export async function getServerSideProps(context) {
             }
         }
     }
+    const dashboardClient = new ApolloClient({
+        uri: Constants.baseUrl + "/api/dashboard",
+        cache: new InMemoryCache(),
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    })
+    const dashboard = await queryGraph(dashboardClient, {}, SchemeGetArticleData)
+        .then((res) => {
+            return res.article_video
+        }).catch((networkErr) => {
+            return {}
+        })
     const careerClient = new ApolloClient({
         uri: Constants.baseUrl + "/api/career",
         cache: new InMemoryCache(),
@@ -329,41 +469,17 @@ export async function getServerSideProps(context) {
         })
     const careerField = careerFields.filter(x => x.id == context.params.cfid)[0]
 
-    var topics = []
-    careerField.topics.map((t) => {
-        topics.push(
-            {
-                name: t.name,
-                color: getColor()
-            }
-        )
-    })
-    var skills = []
-    careerField.skills.map((s) => {
-        skills.push(
-            {
-                name: s.name,
-                color: getColor()
-            }
-        )
-    })
-    var employment_areas = []
-    careerField.employment_areas.map((ea) => {
-        employment_areas.push(
-            {
-                name: ea.name,
-                color: getColor()
-            }
-        )
-    })
-
     const universitiesRaw = await queryGraph(careerClient, { pool_id: parseInt(context.params.id), field_id: parseInt(context.params.cfid) }, SchemeGetUniversities)
         .then((res) => {
+            console.log(res.allUniversity)
             return res.allUniversity
         }).catch((networkErr) => {
-            return {}
+            console.log(networkErr)
+            return [{
+                university: []
+            }]
         })
-    const universities = universitiesRaw[0].university
+    const universities = universitiesRaw[0] != null ? universitiesRaw[0].university != null ? universitiesRaw[0].university : [] : []
 
     const profileClient = new ApolloClient({
         uri: Constants.baseUrl + "/api/user",
@@ -380,7 +496,7 @@ export async function getServerSideProps(context) {
             return {};
         })
     return {
-        props: { profile, jobFamily, careerField, topics, skills, employment_areas, universities, token }
+        props: { profile, jobFamily, careerField, universities, dashboard }
     }
 }
 

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
 
@@ -5,7 +6,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const SettingNavigationLayout = ({ index, authToken }) => {
+const SettingNavigationLayout = ({ index }) => {
     const router = useRouter()
     return (
         <div className="bg-white shadow sm:rounded-lg p-4">
@@ -13,29 +14,27 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                 Settings
             </h2>
             <div className="space-y-1 mt-4">
-                <a
-                    href="#"
-                    className={classNames(
-                        index == 1 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
-                        "font-medium text-sm p-2 rounded-md items-center flex duration-500"
-                    )}
-                    onClick={() => {
-                        router.push({
-                            pathname: '/aboutus',
-                            query: { token: authToken }
-                        })
-                    }}
-                >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 1 ? 'white' : 'currentColor'}>
-                        <g>
+                <Link
+                    href="/aboutus">
+                    <a
+                        className={classNames(
+                            index == 1 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
+                            "font-medium text-sm p-2 rounded-md items-center flex duration-500"
+                        )}
+                    >
+                        <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 1 ? 'white' : 'currentColor'}>
+                            <g>
 
-                            <path
-                                d="M 12 22 C 9.349 22 6.804 20.946 4.929 19.071 C 3.054 17.196 2 14.651 2 12 C 2 9.349 3.054 6.804 4.929 4.929 C 6.804 3.054 9.349 2 12 2 C 14.651 2 17.196 3.054 19.071 4.929 C 20.946 6.804 22 9.349 22 12 C 22 13.755 21.538 15.48 20.66 17 C 19.783 18.52 18.52 19.783 17 20.66 C 15.48 21.538 13.755 22 12 22 Z M 11 11 L 11 17 L 13 17 L 13 11 Z M 11 7 L 11 9 L 13 9 L 13 7 Z"
-                                strokeWidth="1" />
-                        </g>
-                    </svg>
-                    About Us
-                </a>
+                                <path
+                                    d="M 12 22 C 9.349 22 6.804 20.946 4.929 19.071 C 3.054 17.196 2 14.651 2 12 C 2 9.349 3.054 6.804 4.929 4.929 C 6.804 3.054 9.349 2 12 2 C 14.651 2 17.196 3.054 19.071 4.929 C 20.946 6.804 22 9.349 22 12 C 22 13.755 21.538 15.48 20.66 17 C 19.783 18.52 18.52 19.783 17 20.66 C 15.48 21.538 13.755 22 12 22 Z M 11 11 L 11 17 L 13 17 L 13 11 Z M 11 7 L 11 9 L 13 9 L 13 7 Z"
+                                    strokeWidth="1" />
+                            </g>
+                        </svg>
+                        About Us
+                    </a>
+                </Link>
+
+
                 <a
                     href="#"
                     className={classNames(
@@ -52,72 +51,58 @@ const SettingNavigationLayout = ({ index, authToken }) => {
                     </svg>
                     Guinness Record
                 </a>
-                <a
-                    href="#"
-                    className={classNames(
-                        index == 3 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
-                        "font-medium text-sm p-2 rounded-md items-center flex duration-500"
-                    )}
-                    onClick={() => {
-                        router.push({
-                            pathname: '/terms_of_policy',
-                            query: { token: authToken }
-                        })
-                    }}
-                >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 3 ? 'white' : 'currentColor'}>
-                        <g>
-                            <path
-                                d="M 16.456 1.315 L 22.027 6.657 L 22.027 21.624 C 22.021 21.911 21.901 22.184 21.693 22.383 C 21.486 22.582 21.208 22.69 20.921 22.684 L 3.079 22.684 C 2.793 22.688 2.516 22.579 2.309 22.38 C 2.102 22.182 1.981 21.91 1.973 21.624 L 1.973 2.375 C 1.979 2.088 2.099 1.815 2.307 1.616 C 2.514 1.417 2.792 1.309 3.079 1.315 Z M 10.886 6.657 L 10.886 8.794 L 13.114 8.794 L 13.114 6.657 Z M 10.886 10.931 L 10.886 17.342 L 13.114 17.342 L 13.114 10.931 Z"
-                                strokeWidth="1" />
-                        </g>
-                    </svg>
-                    Terms of Policy
-                </a>
-                <a
-                    href="#"
-                    onClick={() => {
-                        router.push({
-                            pathname: '/contactus',
-                            query: { token: authToken }
-                        })
-                    }}
-                    className={classNames(
-                        index == 4 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
-                        "font-medium text-sm p-2 rounded-md items-center flex duration-500"
-                    )}
-                >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 4 ? 'white' : 'currentColor'}>
-                        <g>
-                            <path
-                                d="M 19.75 14.725 L 19.75 18.6 C 19.751 18.878 19.646 19.147 19.457 19.351 C 19.267 19.555 19.008 19.68 18.73 19.7 C 18.251 19.733 17.859 19.75 17.556 19.75 C 14.474 19.75 11.447 18.939 8.778 17.398 C 6.109 15.858 3.892 13.641 2.352 10.972 C 0.811 8.303 0 5.276 0 2.194 Q 0 1.74 0.05 1.02 C 0.07 0.743 0.194 0.484 0.397 0.295 C 0.6 0.106 0.868 0.001 1.145 0 L 5.025 0 C 5.161 0 5.292 0.051 5.393 0.142 C 5.494 0.233 5.557 0.359 5.571 0.494 C 5.596 0.746 5.619 0.947 5.641 1.1 C 5.859 2.622 6.306 4.102 6.966 5.49 C 7.017 5.596 7.028 5.717 6.999 5.83 C 6.969 5.944 6.901 6.044 6.805 6.112 L 4.438 7.8 C 5.885 11.172 8.575 13.862 11.947 15.309 L 13.637 12.946 C 13.706 12.849 13.807 12.78 13.922 12.75 C 14.037 12.721 14.159 12.732 14.266 12.783 C 15.654 13.442 17.134 13.888 18.655 14.105 C 18.808 14.127 19.008 14.151 19.255 14.175 C 19.39 14.189 19.515 14.252 19.606 14.353 C 19.698 14.454 19.748 14.585 19.748 14.721 Z"
-                                strokeWidth="1" />
-                        </g>
-                    </svg>
-                    Contact Us
-                </a>
-                <a
-                    href="#"
-                    className={classNames(
-                        index == 5 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
-                        "font-medium text-sm p-2 rounded-md items-center flex duration-500"
-                    )}
-                    onClick={() => {
-                        router.push({
-                            pathname: '/privacy_policy',
-                            query: { token: authToken }
-                        })
-                    }}
-                >
-                    <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 5 ? 'white' : 'currentColor'}>
-                        <g>
-                            <path
-                                d="M 22 10 L 12 10 L 12 17.382 C 11.999 18.073 12.151 18.756 12.445 19.381 C 12.739 20.007 13.168 20.56 13.7 21 L 3 21 C 2.735 21 2.48 20.895 2.293 20.707 C 2.105 20.52 2 20.265 2 20 L 2 4 C 2 3.735 2.105 3.48 2.293 3.293 C 2.48 3.105 2.735 3 3 3 L 10.414 3 L 12.414 5 L 21 5 C 21.265 5 21.52 5.105 21.707 5.293 C 21.895 5.48 22 5.735 22 6 Z M 14 12 L 22 12 L 22 17.382 C 22 17.823 21.892 18.257 21.685 18.645 C 21.478 19.034 21.179 19.366 20.813 19.612 L 18 21.5 L 15.187 19.615 C 14.821 19.369 14.521 19.037 14.314 18.647 C 14.107 18.258 13.999 17.824 14 17.383 Z"
-                                strokeWidth="1" />
-                        </g>
-                    </svg>
-                    Privacy Policy
-                </a>
+                <Link href="/terms_of_policy">
+                    <a
+                        className={classNames(
+                            index == 3 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
+                            "font-medium text-sm p-2 rounded-md items-center flex duration-500"
+                        )}
+                    >
+                        <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 3 ? 'white' : 'currentColor'}>
+                            <g>
+                                <path
+                                    d="M 16.456 1.315 L 22.027 6.657 L 22.027 21.624 C 22.021 21.911 21.901 22.184 21.693 22.383 C 21.486 22.582 21.208 22.69 20.921 22.684 L 3.079 22.684 C 2.793 22.688 2.516 22.579 2.309 22.38 C 2.102 22.182 1.981 21.91 1.973 21.624 L 1.973 2.375 C 1.979 2.088 2.099 1.815 2.307 1.616 C 2.514 1.417 2.792 1.309 3.079 1.315 Z M 10.886 6.657 L 10.886 8.794 L 13.114 8.794 L 13.114 6.657 Z M 10.886 10.931 L 10.886 17.342 L 13.114 17.342 L 13.114 10.931 Z"
+                                    strokeWidth="1" />
+                            </g>
+                        </svg>
+                        Terms of Policy
+                    </a>
+                </Link>
+                <Link href="/contactus">
+                    <a
+                        className={classNames(
+                            index == 4 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
+                            "font-medium text-sm p-2 rounded-md items-center flex duration-500"
+                        )}
+                    >
+                        <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 4 ? 'white' : 'currentColor'}>
+                            <g>
+                                <path
+                                    d="M 19.75 14.725 L 19.75 18.6 C 19.751 18.878 19.646 19.147 19.457 19.351 C 19.267 19.555 19.008 19.68 18.73 19.7 C 18.251 19.733 17.859 19.75 17.556 19.75 C 14.474 19.75 11.447 18.939 8.778 17.398 C 6.109 15.858 3.892 13.641 2.352 10.972 C 0.811 8.303 0 5.276 0 2.194 Q 0 1.74 0.05 1.02 C 0.07 0.743 0.194 0.484 0.397 0.295 C 0.6 0.106 0.868 0.001 1.145 0 L 5.025 0 C 5.161 0 5.292 0.051 5.393 0.142 C 5.494 0.233 5.557 0.359 5.571 0.494 C 5.596 0.746 5.619 0.947 5.641 1.1 C 5.859 2.622 6.306 4.102 6.966 5.49 C 7.017 5.596 7.028 5.717 6.999 5.83 C 6.969 5.944 6.901 6.044 6.805 6.112 L 4.438 7.8 C 5.885 11.172 8.575 13.862 11.947 15.309 L 13.637 12.946 C 13.706 12.849 13.807 12.78 13.922 12.75 C 14.037 12.721 14.159 12.732 14.266 12.783 C 15.654 13.442 17.134 13.888 18.655 14.105 C 18.808 14.127 19.008 14.151 19.255 14.175 C 19.39 14.189 19.515 14.252 19.606 14.353 C 19.698 14.454 19.748 14.585 19.748 14.721 Z"
+                                    strokeWidth="1" />
+                            </g>
+                        </svg>
+                        Contact Us
+                    </a>
+                </Link>
+                <Link href="/privacy_policy">
+                    <a
+                        className={classNames(
+                            index == 5 ? 'text-white bg-lblue' : 'text-black bg-white hover:bg-indigo-100 hover:text-lblue',
+                            "font-medium text-sm p-2 rounded-md items-center flex duration-500"
+                        )}
+                    >
+                        <svg className="mr-4" viewBox="0 0 24 24" width="20" height="20" fill={index == 5 ? 'white' : 'currentColor'}>
+                            <g>
+                                <path
+                                    d="M 22 10 L 12 10 L 12 17.382 C 11.999 18.073 12.151 18.756 12.445 19.381 C 12.739 20.007 13.168 20.56 13.7 21 L 3 21 C 2.735 21 2.48 20.895 2.293 20.707 C 2.105 20.52 2 20.265 2 20 L 2 4 C 2 3.735 2.105 3.48 2.293 3.293 C 2.48 3.105 2.735 3 3 3 L 10.414 3 L 12.414 5 L 21 5 C 21.265 5 21.52 5.105 21.707 5.293 C 21.895 5.48 22 5.735 22 6 Z M 14 12 L 22 12 L 22 17.382 C 22 17.823 21.892 18.257 21.685 18.645 C 21.478 19.034 21.179 19.366 20.813 19.612 L 18 21.5 L 15.187 19.615 C 14.821 19.369 14.521 19.037 14.314 18.647 C 14.107 18.258 13.999 17.824 14 17.383 Z"
+                                    strokeWidth="1" />
+                            </g>
+                        </svg>
+                        Privacy Policy
+                    </a>
+                </Link>
+
             </div>
             <h2 id="applicant-information-title" className="mt-8 text-base font-medium text-gray-900 rounded w-full">
                 Follow Us on
